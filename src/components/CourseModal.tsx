@@ -208,7 +208,7 @@ export function CourseModal({ isOpen, onClose, course, categories, onSave }: Cou
             >
               <div className="flex items-center gap-2">
                 <Sparkles className="w-5 h-5 text-purple-600" />
-                <span className="font-medium text-purple-900">AI Generate Outline</span>
+                <span className="font-medium text-purple-900 text-sm sm:text-base">AI Generate Outline</span>
               </div>
               <span className="text-sm text-purple-600">{showAiPanel ? 'Hide' : 'Expand'}</span>
             </button>
@@ -224,11 +224,12 @@ export function CourseModal({ isOpen, onClose, course, categories, onSave }: Cou
                     value={aiTopic}
                     onChange={(e) => setAiTopic(e.target.value)}
                     placeholder="e.g., Introduction to Python Programming"
-                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    className="w-full px-3 py-2.5 sm:py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent text-base"
                   />
                 </div>
                 
-                <div className="grid grid-cols-2 gap-4">
+                {/* Stack on mobile, 2 cols on desktop */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-slate-700 mb-1">
                       Difficulty Level
@@ -236,7 +237,7 @@ export function CourseModal({ isOpen, onClose, course, categories, onSave }: Cou
                     <select
                       value={aiLevel}
                       onChange={(e) => setAiLevel(e.target.value)}
-                      className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                      className="w-full px-3 py-2.5 sm:py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent text-base"
                     >
                       <option value="beginner">Beginner</option>
                       <option value="intermediate">Intermediate</option>
@@ -253,7 +254,7 @@ export function CourseModal({ isOpen, onClose, course, categories, onSave }: Cou
                       onChange={(e) => setAiUnitCount(Math.max(1, Math.min(15, parseInt(e.target.value) || 5)))}
                       min={1}
                       max={15}
-                      className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                      className="w-full px-3 py-2.5 sm:py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent text-base"
                     />
                   </div>
                 </div>
@@ -268,7 +269,7 @@ export function CourseModal({ isOpen, onClose, course, categories, onSave }: Cou
                   type="button"
                   onClick={handleAiGenerate}
                   disabled={aiLoading || !aiTopic.trim()}
-                  className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-lg hover:from-purple-700 hover:to-indigo-700 disabled:opacity-50 transition-all"
+                  className="w-full flex items-center justify-center gap-2 px-4 py-2.5 sm:py-2 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-lg hover:from-purple-700 hover:to-indigo-700 disabled:opacity-50 transition-all min-h-[44px]"
                 >
                   {aiLoading ? (
                     <>
@@ -285,32 +286,32 @@ export function CourseModal({ isOpen, onClose, course, categories, onSave }: Cou
 
                 {/* Generated Outline Preview */}
                 {generatedOutline && (
-                  <div className="border border-green-200 rounded-lg p-4 bg-green-50">
-                    <div className="flex items-center justify-between mb-3">
+                  <div className="border border-green-200 rounded-lg p-3 sm:p-4 bg-green-50">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
                       <h4 className="font-semibold text-green-800">Generated Outline</h4>
                       <button
                         type="button"
                         onClick={applyOutline}
-                        className="px-3 py-1 bg-green-600 text-white text-sm rounded hover:bg-green-700"
+                        className="px-3 py-1.5 bg-green-600 text-white text-sm rounded hover:bg-green-700 w-full sm:w-auto"
                       >
                         Apply & Close
                       </button>
                     </div>
                     <p className="text-sm font-medium text-slate-900">{generatedOutline.name}</p>
                     <p className="text-sm text-slate-600 mb-3">{generatedOutline.description}</p>
-                    <div className="space-y-2 text-sm">
+                    <div className="space-y-2 text-sm max-h-40 overflow-y-auto">
                       {generatedOutline.sections.map((section, i) => (
                         <div key={i}>
                           <p className="font-medium text-slate-700">{section.name}</p>
                           <ul className="ml-4 text-slate-500">
                             {section.units.map((unit, j) => (
-                              <li key={j} className="flex items-center gap-2">
+                              <li key={j} className="flex items-center gap-2 flex-wrap">
                                 <span className={`px-1.5 py-0.5 text-xs rounded ${
                                   unit.type === 'quiz' ? 'bg-amber-100 text-amber-700' :
                                   unit.type === 'video' ? 'bg-blue-100 text-blue-700' :
                                   'bg-slate-100 text-slate-600'
                                 }`}>{unit.type}</span>
-                                {unit.name}
+                                <span className="break-words">{unit.name}</span>
                               </li>
                             ))}
                           </ul>
@@ -318,7 +319,7 @@ export function CourseModal({ isOpen, onClose, course, categories, onSave }: Cou
                       ))}
                     </div>
                     <p className="text-xs text-slate-500 mt-3">
-                      Note: The outline preview is for reference. Units will need to be created manually after saving the course.
+                      Note: Units will need to be created manually after saving.
                     </p>
                   </div>
                 )}
@@ -335,7 +336,7 @@ export function CourseModal({ isOpen, onClose, course, categories, onSave }: Cou
             type="text"
             value={formData.name}
             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-            className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full px-3 py-2.5 sm:py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base"
             required
           />
         </div>
@@ -348,7 +349,7 @@ export function CourseModal({ isOpen, onClose, course, categories, onSave }: Cou
             value={formData.description}
             onChange={(e) => setFormData({ ...formData, description: e.target.value })}
             rows={3}
-            className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+            className="w-full px-3 py-2.5 sm:py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none text-base"
           />
         </div>
 
@@ -361,11 +362,12 @@ export function CourseModal({ isOpen, onClose, course, categories, onSave }: Cou
             value={formData.thumbnail_url}
             onChange={(e) => setFormData({ ...formData, thumbnail_url: e.target.value })}
             placeholder="https://example.com/image.jpg"
-            className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full px-3 py-2.5 sm:py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base"
           />
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
+        {/* Stack on mobile, 2 cols on desktop */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-slate-700 mb-1">
               Category
@@ -373,7 +375,7 @@ export function CourseModal({ isOpen, onClose, course, categories, onSave }: Cou
             <select
               value={formData.category_id}
               onChange={(e) => setFormData({ ...formData, category_id: e.target.value })}
-              className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-3 py-2.5 sm:py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base"
             >
               <option value="">No Category</option>
               {categories.map((cat) => (
@@ -391,7 +393,7 @@ export function CourseModal({ isOpen, onClose, course, categories, onSave }: Cou
             <select
               value={formData.status}
               onChange={(e) => setFormData({ ...formData, status: e.target.value as 'draft' | 'published' | 'archived' })}
-              className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-3 py-2.5 sm:py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base"
             >
               <option value="draft">Draft</option>
               <option value="published">Published</option>
@@ -400,7 +402,8 @@ export function CourseModal({ isOpen, onClose, course, categories, onSave }: Cou
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
+        {/* Stack on mobile, 2 cols on desktop */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-slate-700 mb-1">
               Time Limit (days)
@@ -411,36 +414,36 @@ export function CourseModal({ isOpen, onClose, course, categories, onSave }: Cou
               onChange={(e) => setFormData({ ...formData, time_limit_days: e.target.value })}
               placeholder="No limit"
               min={1}
-              className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-3 py-2.5 sm:py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base"
             />
             <p className="mt-1 text-xs text-slate-500">Days to complete after enrollment</p>
           </div>
 
           <div className="flex items-center">
-            <label className="flex items-center gap-2 cursor-pointer mt-6">
+            <label className="flex items-center gap-3 cursor-pointer mt-0 sm:mt-6 py-2">
               <input
                 type="checkbox"
                 checked={formData.hidden}
                 onChange={(e) => setFormData({ ...formData, hidden: e.target.checked })}
-                className="w-4 h-4 text-blue-600 border-slate-300 rounded focus:ring-blue-500"
+                className="w-5 h-5 text-blue-600 border-slate-300 rounded focus:ring-blue-500"
               />
               <span className="text-sm text-slate-700">Hidden from catalog</span>
             </label>
           </div>
         </div>
 
-        <div className="flex justify-end gap-3 pt-4 border-t border-slate-200">
+        <div className="flex flex-col-reverse sm:flex-row justify-end gap-3 pt-4 border-t border-slate-200">
           <button
             type="button"
             onClick={onClose}
-            className="px-4 py-2 text-slate-700 hover:bg-slate-100 rounded-lg transition-colors"
+            className="w-full sm:w-auto px-4 py-2.5 sm:py-2 text-slate-700 hover:bg-slate-100 rounded-lg transition-colors min-h-[44px]"
           >
             Cancel
           </button>
           <button
             type="submit"
             disabled={loading}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 transition-colors"
+            className="w-full sm:w-auto px-4 py-2.5 sm:py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 transition-colors min-h-[44px]"
           >
             {loading ? 'Saving...' : course ? 'Update Course' : 'Create Course'}
           </button>

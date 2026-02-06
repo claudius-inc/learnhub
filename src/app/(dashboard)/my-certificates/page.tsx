@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import {
   Award,
@@ -8,7 +8,6 @@ import {
   ExternalLink,
   Calendar,
   BookOpen,
-  Share2,
   Copy,
   Check,
 } from 'lucide-react';
@@ -168,24 +167,24 @@ export default function MyCertificatesPage() {
 
   if (loading) {
     return (
-      <div className="p-8">
-        <h1 className="text-2xl font-bold text-slate-900 mb-6">My Certificates</h1>
+      <div>
+        <h1 className="text-xl md:text-2xl font-bold text-slate-900 mb-4 md:mb-6">My Certificates</h1>
         <div className="text-slate-500">Loading certificates...</div>
       </div>
     );
   }
 
   return (
-    <div className="p-8">
-      <h1 className="text-2xl font-bold text-slate-900 mb-6">My Certificates</h1>
+    <div>
+      <h1 className="text-xl md:text-2xl font-bold text-slate-900 mb-4 md:mb-6">My Certificates</h1>
 
       {certificates.length === 0 ? (
-        <div className="text-center py-12 bg-white rounded-xl border border-slate-200">
-          <Award className="w-16 h-16 text-slate-300 mx-auto mb-4" />
-          <h2 className="text-xl font-semibold text-slate-900 mb-2">
+        <div className="text-center py-8 md:py-12 bg-white rounded-xl border border-slate-200">
+          <Award className="w-12 md:w-16 h-12 md:h-16 text-slate-300 mx-auto mb-4" />
+          <h2 className="text-lg md:text-xl font-semibold text-slate-900 mb-2">
             No certificates yet
           </h2>
-          <p className="text-slate-500 mb-6">
+          <p className="text-sm md:text-base text-slate-500 mb-6 px-4">
             Complete courses to earn certificates!
           </p>
           <Link
@@ -197,52 +196,52 @@ export default function MyCertificatesPage() {
           </Link>
         </div>
       ) : (
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-4 md:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
           {certificates.map((cert) => (
             <div
               key={cert.id}
               className="bg-white rounded-xl border border-slate-200 overflow-hidden hover:shadow-md transition-shadow"
             >
               {/* Certificate Preview */}
-              <div className="bg-gradient-to-br from-slate-800 to-slate-900 p-6 text-center">
-                <Award className="w-12 h-12 text-amber-400 mx-auto mb-3" />
-                <h3 className="text-lg font-semibold text-white line-clamp-2">
+              <div className="bg-gradient-to-br from-slate-800 to-slate-900 p-4 md:p-6 text-center">
+                <Award className="w-10 md:w-12 h-10 md:h-12 text-amber-400 mx-auto mb-2 md:mb-3" />
+                <h3 className="text-base md:text-lg font-semibold text-white line-clamp-2">
                   {cert.course_name}
                 </h3>
               </div>
 
               {/* Details */}
               <div className="p-4">
-                <div className="flex items-center gap-2 text-sm text-slate-500 mb-3">
-                  <Calendar className="w-4 h-4" />
+                <div className="flex items-center gap-2 text-xs md:text-sm text-slate-500 mb-3">
+                  <Calendar className="w-4 h-4 shrink-0" />
                   <span>Issued {formatDate(cert.issued_at)}</span>
                 </div>
 
                 {cert.expires_at && (
-                  <div className="text-sm text-amber-600 mb-3">
+                  <div className="text-xs md:text-sm text-amber-600 mb-3">
                     Expires {formatDate(cert.expires_at)}
                   </div>
                 )}
 
-                <div className="bg-slate-50 rounded-lg p-3 mb-4">
+                <div className="bg-slate-50 rounded-lg p-2 md:p-3 mb-4">
                   <div className="text-xs text-slate-500 mb-1">
                     Verification Code
                   </div>
-                  <div className="font-mono text-sm">{cert.verification_code}</div>
+                  <div className="font-mono text-xs md:text-sm break-all">{cert.verification_code}</div>
                 </div>
 
-                {/* Actions */}
-                <div className="flex gap-2">
+                {/* Actions - stack on mobile */}
+                <div className="flex flex-col sm:flex-row gap-2">
                   <button
                     onClick={() => handleDownload(cert)}
-                    className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm"
+                    className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 sm:py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm min-h-[44px]"
                   >
                     <Download className="w-4 h-4" />
                     Download
                   </button>
                   <button
                     onClick={() => handleCopy(cert.verification_code, cert.id)}
-                    className="flex items-center justify-center gap-2 px-3 py-2 border border-slate-300 rounded-lg hover:bg-slate-50 text-sm"
+                    className="flex items-center justify-center gap-2 px-3 py-2.5 sm:py-2 border border-slate-300 rounded-lg hover:bg-slate-50 text-sm min-h-[44px]"
                   >
                     {copiedId === cert.id ? (
                       <>
@@ -261,7 +260,7 @@ export default function MyCertificatesPage() {
                 <Link
                   href={`/verify/${cert.verification_code}`}
                   target="_blank"
-                  className="mt-3 flex items-center justify-center gap-2 text-sm text-blue-600 hover:underline"
+                  className="mt-3 flex items-center justify-center gap-2 text-sm text-blue-600 hover:underline py-2"
                 >
                   <ExternalLink className="w-3 h-3" />
                   View Public Page

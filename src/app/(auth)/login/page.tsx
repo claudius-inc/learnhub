@@ -41,10 +41,10 @@ function LoginForm() {
   };
 
   return (
-    <div className="w-full max-w-md p-8 bg-white rounded-xl shadow-lg">
-      <div className="text-center mb-8">
-        <h1 className="text-2xl font-bold text-slate-900">LearnHub</h1>
-        <p className="text-slate-500 mt-2">Sign in to your account</p>
+    <div className="w-full max-w-md mx-4 p-6 sm:p-8 bg-white rounded-xl shadow-lg">
+      <div className="text-center mb-6 sm:mb-8">
+        <h1 className="text-xl sm:text-2xl font-bold text-slate-900">LearnHub</h1>
+        <p className="text-sm sm:text-base text-slate-500 mt-2">Sign in to your account</p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-4">
@@ -63,9 +63,10 @@ function LoginForm() {
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
+            className="w-full px-4 py-3 sm:py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition text-base"
             placeholder="admin@learnhub.local"
             required
+            autoComplete="email"
           />
         </div>
 
@@ -78,22 +79,23 @@ function LoginForm() {
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
+            className="w-full px-4 py-3 sm:py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition text-base"
             placeholder="••••••••"
             required
+            autoComplete="current-password"
           />
         </div>
 
         <button
           type="submit"
           disabled={loading}
-          className="w-full py-2 px-4 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white font-medium rounded-lg transition"
+          className="w-full py-3 sm:py-2 px-4 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white font-medium rounded-lg transition min-h-[44px]"
         >
           {loading ? 'Signing in...' : 'Sign in'}
         </button>
       </form>
 
-      <p className="mt-6 text-center text-sm text-slate-500">
+      <p className="mt-6 text-center text-xs sm:text-sm text-slate-500">
         Default: admin@learnhub.local / admin123
       </p>
     </div>
@@ -102,9 +104,9 @@ function LoginForm() {
 
 export default function LoginPage() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-50">
+    <div className="min-h-screen flex items-center justify-center bg-slate-50 p-4">
       <Suspense fallback={
-        <div className="w-full max-w-md p-8 bg-white rounded-xl shadow-lg text-center">
+        <div className="w-full max-w-md mx-4 p-6 sm:p-8 bg-white rounded-xl shadow-lg text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
         </div>
       }>

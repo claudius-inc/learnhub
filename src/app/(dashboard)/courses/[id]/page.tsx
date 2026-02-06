@@ -16,10 +16,8 @@ import {
   HelpCircle,
   ClipboardList,
   ExternalLink,
-  MoreHorizontal,
   Pencil,
   Trash2,
-  Eye,
   EyeOff,
   Settings
 } from 'lucide-react';
@@ -178,7 +176,7 @@ export default function CourseDetailPage({ params }: { params: Promise<{ id: str
 
   if (loading) {
     return (
-      <div className="p-6">
+      <div>
         <div className="text-center py-12 text-slate-500">Loading...</div>
       </div>
     );
@@ -186,8 +184,8 @@ export default function CourseDetailPage({ params }: { params: Promise<{ id: str
 
   if (error || !course) {
     return (
-      <div className="p-6">
-        <div className="bg-white rounded-xl border border-slate-200 p-12 text-center">
+      <div>
+        <div className="bg-white rounded-xl border border-slate-200 p-8 md:p-12 text-center">
           <BookOpen className="w-12 h-12 text-slate-300 mx-auto mb-4" />
           <h3 className="text-lg font-medium text-slate-900 mb-1">{error || 'Course not found'}</h3>
           <Link
@@ -203,58 +201,62 @@ export default function CourseDetailPage({ params }: { params: Promise<{ id: str
   }
 
   return (
-    <div className="p-6">
-      {/* Header */}
-      <div className="flex items-center gap-4 mb-6">
-        <Link
-          href="/courses"
-          className="p-2 hover:bg-slate-100 rounded-lg transition-colors"
-        >
-          <ArrowLeft className="w-5 h-5 text-slate-600" />
-        </Link>
-        <div className="flex-1">
-          <div className="flex items-center gap-3">
-            <h1 className="text-2xl font-bold text-slate-900">{course.name}</h1>
-            <span className={cn('px-2.5 py-1 text-xs font-medium rounded-full capitalize', statusColors[course.status])}>
-              {course.status}
-            </span>
-            {course.hidden === 1 && (
-              <span className="px-2.5 py-1 text-xs font-medium rounded-full bg-slate-100 text-slate-600 flex items-center gap-1">
-                <EyeOff className="w-3 h-3" />
-                Hidden
+    <div>
+      {/* Header - stack on mobile */}
+      <div className="flex flex-col gap-4 mb-4 md:mb-6">
+        <div className="flex items-start gap-3">
+          <Link
+            href="/courses"
+            className="p-2 hover:bg-slate-100 rounded-lg transition-colors shrink-0 mt-0.5"
+          >
+            <ArrowLeft className="w-5 h-5 text-slate-600" />
+          </Link>
+          <div className="flex-1 min-w-0">
+            <div className="flex flex-wrap items-center gap-2 mb-1">
+              <h1 className="text-xl md:text-2xl font-bold text-slate-900 break-words">{course.name}</h1>
+              <span className={cn('px-2 py-0.5 text-xs font-medium rounded-full capitalize shrink-0', statusColors[course.status])}>
+                {course.status}
+              </span>
+              {course.hidden === 1 && (
+                <span className="px-2 py-0.5 text-xs font-medium rounded-full bg-slate-100 text-slate-600 flex items-center gap-1 shrink-0">
+                  <EyeOff className="w-3 h-3" />
+                  Hidden
+                </span>
+              )}
+            </div>
+            {course.category_name && (
+              <span
+                className="inline-block px-2 py-0.5 text-xs rounded-full"
+                style={{
+                  backgroundColor: (course.category_color || '#6366f1') + '20',
+                  color: course.category_color || '#6366f1',
+                }}
+              >
+                {course.category_name}
               </span>
             )}
           </div>
-          {course.category_name && (
-            <span
-              className="inline-block mt-1 px-2 py-0.5 text-xs rounded-full"
-              style={{
-                backgroundColor: (course.category_color || '#6366f1') + '20',
-                color: course.category_color || '#6366f1',
-              }}
-            >
-              {course.category_name}
-            </span>
-          )}
         </div>
-        <div className="flex items-center gap-2">
+        
+        {/* Action buttons - full width on mobile */}
+        <div className="flex flex-col sm:flex-row gap-2 sm:ml-10">
           <Link
             href={`/courses/${id}/edit`}
-            className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            className="flex items-center justify-center gap-2 px-4 py-2.5 sm:py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors min-h-[44px]"
           >
             <Pencil className="w-4 h-4" />
             Edit Course
           </Link>
           <button
             onClick={() => setModalOpen(true)}
-            className="flex items-center gap-2 px-4 py-2 border border-slate-300 rounded-lg hover:bg-slate-50 transition-colors"
+            className="flex items-center justify-center gap-2 px-4 py-2.5 sm:py-2 border border-slate-300 rounded-lg hover:bg-slate-50 transition-colors min-h-[44px]"
           >
             <Settings className="w-4 h-4" />
             Settings
           </button>
           <button
             onClick={handleDelete}
-            className="flex items-center gap-2 px-4 py-2 border border-red-300 text-red-600 rounded-lg hover:bg-red-50 transition-colors"
+            className="flex items-center justify-center gap-2 px-4 py-2.5 sm:py-2 border border-red-300 text-red-600 rounded-lg hover:bg-red-50 transition-colors min-h-[44px]"
           >
             <Trash2 className="w-4 h-4" />
             Delete
@@ -262,50 +264,50 @@ export default function CourseDetailPage({ params }: { params: Promise<{ id: str
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
         {/* Main Content */}
-        <div className="lg:col-span-2 space-y-6">
+        <div className="lg:col-span-2 space-y-4 md:space-y-6">
           {/* Description */}
           {course.description && (
-            <div className="bg-white rounded-xl border border-slate-200 p-6">
-              <h2 className="text-lg font-semibold text-slate-900 mb-3">Description</h2>
-              <p className="text-slate-600 whitespace-pre-wrap">{course.description}</p>
+            <div className="bg-white rounded-xl border border-slate-200 p-4 md:p-6">
+              <h2 className="text-base md:text-lg font-semibold text-slate-900 mb-3">Description</h2>
+              <p className="text-sm md:text-base text-slate-600 whitespace-pre-wrap">{course.description}</p>
             </div>
           )}
 
           {/* Course Structure */}
-          <div className="bg-white rounded-xl border border-slate-200 p-6">
+          <div className="bg-white rounded-xl border border-slate-200 p-4 md:p-6">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-semibold text-slate-900">Course Structure</h2>
-              <span className="text-sm text-slate-500">
+              <h2 className="text-base md:text-lg font-semibold text-slate-900">Course Structure</h2>
+              <span className="text-xs md:text-sm text-slate-500">
                 {sections.length} sections · {units.length} units
               </span>
             </div>
 
             {sections.length === 0 && units.length === 0 ? (
-              <div className="text-center py-8 text-slate-500">
+              <div className="text-center py-6 md:py-8 text-slate-500">
                 <Layers className="w-10 h-10 mx-auto mb-2 text-slate-300" />
-                <p>No content yet</p>
-                <p className="text-sm mt-1">Add sections and units to build your course</p>
+                <p className="text-sm md:text-base">No content yet</p>
+                <p className="text-xs md:text-sm mt-1">Add sections and units to build your course</p>
               </div>
             ) : (
               <div className="space-y-4">
                 {/* Unsectioned units */}
                 {unsectionedUnits.length > 0 && (
                   <div className="border border-slate-200 rounded-lg overflow-hidden">
-                    <div className="bg-slate-50 px-4 py-3 border-b border-slate-200">
-                      <h3 className="font-medium text-slate-700">Unsectioned Units</h3>
+                    <div className="bg-slate-50 px-3 md:px-4 py-2 md:py-3 border-b border-slate-200">
+                      <h3 className="font-medium text-slate-700 text-sm md:text-base">Unsectioned Units</h3>
                     </div>
                     <ul className="divide-y divide-slate-100">
                       {unsectionedUnits.map((unit) => {
                         const Icon = unitTypeIcons[unit.type] || FileText;
                         return (
-                          <li key={unit.id} className="px-4 py-3 flex items-center gap-3 hover:bg-slate-50">
-                            <span className={cn('p-2 rounded-lg', unitTypeColors[unit.type])}>
-                              <Icon className="w-4 h-4" />
+                          <li key={unit.id} className="px-3 md:px-4 py-2.5 md:py-3 flex items-center gap-3 hover:bg-slate-50">
+                            <span className={cn('p-1.5 md:p-2 rounded-lg shrink-0', unitTypeColors[unit.type])}>
+                              <Icon className="w-3.5 md:w-4 h-3.5 md:h-4" />
                             </span>
-                            <span className="flex-1 text-slate-700">{unit.name}</span>
-                            <span className="text-xs text-slate-400 capitalize">{unit.type}</span>
+                            <span className="flex-1 text-slate-700 text-sm md:text-base truncate">{unit.name}</span>
+                            <span className="text-xs text-slate-400 capitalize shrink-0">{unit.type}</span>
                           </li>
                         );
                       })}
@@ -320,12 +322,12 @@ export default function CourseDetailPage({ params }: { params: Promise<{ id: str
                     const sectionUnits = getUnitsForSection(section.id);
                     return (
                       <div key={section.id} className="border border-slate-200 rounded-lg overflow-hidden">
-                        <div className="bg-slate-50 px-4 py-3 border-b border-slate-200 flex items-center justify-between">
-                          <h3 className="font-medium text-slate-700">{section.name}</h3>
-                          <span className="text-xs text-slate-500">{sectionUnits.length} units</span>
+                        <div className="bg-slate-50 px-3 md:px-4 py-2 md:py-3 border-b border-slate-200 flex items-center justify-between">
+                          <h3 className="font-medium text-slate-700 text-sm md:text-base truncate">{section.name}</h3>
+                          <span className="text-xs text-slate-500 shrink-0 ml-2">{sectionUnits.length} units</span>
                         </div>
                         {sectionUnits.length === 0 ? (
-                          <div className="px-4 py-6 text-center text-slate-400 text-sm">
+                          <div className="px-4 py-4 md:py-6 text-center text-slate-400 text-sm">
                             No units in this section
                           </div>
                         ) : (
@@ -333,12 +335,12 @@ export default function CourseDetailPage({ params }: { params: Promise<{ id: str
                             {sectionUnits.map((unit) => {
                               const Icon = unitTypeIcons[unit.type] || FileText;
                               return (
-                                <li key={unit.id} className="px-4 py-3 flex items-center gap-3 hover:bg-slate-50">
-                                  <span className={cn('p-2 rounded-lg', unitTypeColors[unit.type])}>
-                                    <Icon className="w-4 h-4" />
+                                <li key={unit.id} className="px-3 md:px-4 py-2.5 md:py-3 flex items-center gap-3 hover:bg-slate-50">
+                                  <span className={cn('p-1.5 md:p-2 rounded-lg shrink-0', unitTypeColors[unit.type])}>
+                                    <Icon className="w-3.5 md:w-4 h-3.5 md:h-4" />
                                   </span>
-                                  <span className="flex-1 text-slate-700">{unit.name}</span>
-                                  <span className="text-xs text-slate-400 capitalize">{unit.type}</span>
+                                  <span className="flex-1 text-slate-700 text-sm md:text-base truncate">{unit.name}</span>
+                                  <span className="text-xs text-slate-400 capitalize shrink-0">{unit.type}</span>
                                 </li>
                               );
                             })}
@@ -353,47 +355,47 @@ export default function CourseDetailPage({ params }: { params: Promise<{ id: str
         </div>
 
         {/* Sidebar */}
-        <div className="space-y-6">
+        <div className="space-y-4 md:space-y-6">
           {/* Course Stats */}
-          <div className="bg-white rounded-xl border border-slate-200 p-6">
-            <h2 className="text-lg font-semibold text-slate-900 mb-4">Course Info</h2>
-            <dl className="space-y-4">
+          <div className="bg-white rounded-xl border border-slate-200 p-4 md:p-6">
+            <h2 className="text-base md:text-lg font-semibold text-slate-900 mb-4">Course Info</h2>
+            <dl className="space-y-3 md:space-y-4">
               <div className="flex items-center gap-3">
-                <div className="p-2 bg-blue-100 rounded-lg">
+                <div className="p-2 bg-blue-100 rounded-lg shrink-0">
                   <Users className="w-4 h-4 text-blue-600" />
                 </div>
-                <div>
+                <div className="min-w-0">
                   <dt className="text-xs text-slate-500">Enrollments</dt>
                   <dd className="font-medium text-slate-900">{course.enrollment_count}</dd>
                 </div>
               </div>
               <div className="flex items-center gap-3">
-                <div className="p-2 bg-purple-100 rounded-lg">
+                <div className="p-2 bg-purple-100 rounded-lg shrink-0">
                   <Layers className="w-4 h-4 text-purple-600" />
                 </div>
-                <div>
+                <div className="min-w-0">
                   <dt className="text-xs text-slate-500">Structure</dt>
-                  <dd className="font-medium text-slate-900">
+                  <dd className="font-medium text-slate-900 text-sm">
                     {course.section_count} sections · {course.unit_count} units
                   </dd>
                 </div>
               </div>
               {course.time_limit_days && (
                 <div className="flex items-center gap-3">
-                  <div className="p-2 bg-amber-100 rounded-lg">
+                  <div className="p-2 bg-amber-100 rounded-lg shrink-0">
                     <Clock className="w-4 h-4 text-amber-600" />
                   </div>
-                  <div>
+                  <div className="min-w-0">
                     <dt className="text-xs text-slate-500">Time Limit</dt>
                     <dd className="font-medium text-slate-900">{course.time_limit_days} days</dd>
                   </div>
                 </div>
               )}
               <div className="flex items-center gap-3">
-                <div className="p-2 bg-green-100 rounded-lg">
+                <div className="p-2 bg-green-100 rounded-lg shrink-0">
                   <Calendar className="w-4 h-4 text-green-600" />
                 </div>
-                <div>
+                <div className="min-w-0">
                   <dt className="text-xs text-slate-500">Created</dt>
                   <dd className="font-medium text-slate-900">
                     {new Date(course.created_at).toLocaleDateString()}
@@ -402,12 +404,12 @@ export default function CourseDetailPage({ params }: { params: Promise<{ id: str
               </div>
               {course.creator_name && (
                 <div className="flex items-center gap-3">
-                  <div className="p-2 bg-slate-100 rounded-lg">
+                  <div className="p-2 bg-slate-100 rounded-lg shrink-0">
                     <Users className="w-4 h-4 text-slate-600" />
                   </div>
-                  <div>
+                  <div className="min-w-0">
                     <dt className="text-xs text-slate-500">Created by</dt>
-                    <dd className="font-medium text-slate-900">{course.creator_name}</dd>
+                    <dd className="font-medium text-slate-900 truncate">{course.creator_name}</dd>
                   </div>
                 </div>
               )}
@@ -416,8 +418,8 @@ export default function CourseDetailPage({ params }: { params: Promise<{ id: str
 
           {/* Thumbnail Preview */}
           {course.thumbnail_url && (
-            <div className="bg-white rounded-xl border border-slate-200 p-6">
-              <h2 className="text-lg font-semibold text-slate-900 mb-4">Thumbnail</h2>
+            <div className="bg-white rounded-xl border border-slate-200 p-4 md:p-6">
+              <h2 className="text-base md:text-lg font-semibold text-slate-900 mb-4">Thumbnail</h2>
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={course.thumbnail_url}

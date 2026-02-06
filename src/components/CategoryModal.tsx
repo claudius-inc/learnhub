@@ -110,7 +110,7 @@ export function CategoryModal({ isOpen, onClose, category, onSave }: CategoryMod
             type="text"
             value={formData.name}
             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-            className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full px-3 py-2.5 sm:py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base"
             required
           />
         </div>
@@ -119,13 +119,14 @@ export function CategoryModal({ isOpen, onClose, category, onSave }: CategoryMod
           <label className="block text-sm font-medium text-slate-700 mb-2">
             Color
           </label>
-          <div className="flex flex-wrap gap-2 mb-2">
+          {/* Color presets - wrap nicely on mobile */}
+          <div className="flex flex-wrap gap-2 sm:gap-2 mb-3">
             {colorPresets.map((color) => (
               <button
                 key={color}
                 type="button"
                 onClick={() => setFormData({ ...formData, color })}
-                className={`w-8 h-8 rounded-full border-2 transition-all ${
+                className={`w-9 h-9 sm:w-8 sm:h-8 rounded-full border-2 transition-all ${
                   formData.color === color
                     ? 'border-slate-900 scale-110'
                     : 'border-transparent hover:scale-105'
@@ -139,13 +140,13 @@ export function CategoryModal({ isOpen, onClose, category, onSave }: CategoryMod
               type="color"
               value={formData.color}
               onChange={(e) => setFormData({ ...formData, color: e.target.value })}
-              className="w-10 h-10 rounded cursor-pointer"
+              className="w-11 h-11 sm:w-10 sm:h-10 rounded cursor-pointer"
             />
             <input
               type="text"
               value={formData.color}
               onChange={(e) => setFormData({ ...formData, color: e.target.value })}
-              className="flex-1 px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent font-mono text-sm"
+              className="flex-1 px-3 py-2.5 sm:py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent font-mono text-sm"
               pattern="^#[0-9A-Fa-f]{6}$"
             />
           </div>
@@ -159,24 +160,24 @@ export function CategoryModal({ isOpen, onClose, category, onSave }: CategoryMod
             type="number"
             value={formData.sort_order}
             onChange={(e) => setFormData({ ...formData, sort_order: parseInt(e.target.value) || 0 })}
-            className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full px-3 py-2.5 sm:py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base"
             min={0}
           />
           <p className="mt-1 text-sm text-slate-500">Lower numbers appear first</p>
         </div>
 
-        <div className="flex justify-end gap-3 pt-4 border-t border-slate-200">
+        <div className="flex flex-col-reverse sm:flex-row justify-end gap-3 pt-4 border-t border-slate-200">
           <button
             type="button"
             onClick={onClose}
-            className="px-4 py-2 text-slate-700 hover:bg-slate-100 rounded-lg transition-colors"
+            className="w-full sm:w-auto px-4 py-2.5 sm:py-2 text-slate-700 hover:bg-slate-100 rounded-lg transition-colors min-h-[44px]"
           >
             Cancel
           </button>
           <button
             type="submit"
             disabled={loading}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 transition-colors"
+            className="w-full sm:w-auto px-4 py-2.5 sm:py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 transition-colors min-h-[44px]"
           >
             {loading ? 'Saving...' : category ? 'Update Category' : 'Add Category'}
           </button>

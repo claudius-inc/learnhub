@@ -128,7 +128,7 @@ export function UserModal({ isOpen, onClose, user, groups, onSave }: UserModalPr
             type="text"
             value={formData.name}
             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-            className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full px-3 py-2.5 sm:py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base"
             required
           />
         </div>
@@ -141,7 +141,7 @@ export function UserModal({ isOpen, onClose, user, groups, onSave }: UserModalPr
             type="email"
             value={formData.email}
             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-            className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full px-3 py-2.5 sm:py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base"
             required
           />
         </div>
@@ -154,13 +154,14 @@ export function UserModal({ isOpen, onClose, user, groups, onSave }: UserModalPr
             type="password"
             value={formData.password}
             onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-            className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full px-3 py-2.5 sm:py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base"
             required={!user}
             minLength={6}
           />
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
+        {/* Stack on mobile, 2 cols on desktop */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-slate-700 mb-1">
               Role
@@ -168,7 +169,7 @@ export function UserModal({ isOpen, onClose, user, groups, onSave }: UserModalPr
             <select
               value={formData.role}
               onChange={(e) => setFormData({ ...formData, role: e.target.value as 'admin' | 'instructor' | 'learner' })}
-              className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-3 py-2.5 sm:py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base"
             >
               <option value="learner">Learner</option>
               <option value="instructor">Instructor</option>
@@ -183,7 +184,7 @@ export function UserModal({ isOpen, onClose, user, groups, onSave }: UserModalPr
             <select
               value={formData.status}
               onChange={(e) => setFormData({ ...formData, status: e.target.value as 'active' | 'inactive' | 'suspended' })}
-              className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-3 py-2.5 sm:py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base"
             >
               <option value="active">Active</option>
               <option value="inactive">Inactive</option>
@@ -199,7 +200,7 @@ export function UserModal({ isOpen, onClose, user, groups, onSave }: UserModalPr
           <select
             value={formData.group_id}
             onChange={(e) => setFormData({ ...formData, group_id: e.target.value })}
-            className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full px-3 py-2.5 sm:py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base"
           >
             <option value="">No Group</option>
             {groups.map((group) => (
@@ -210,18 +211,18 @@ export function UserModal({ isOpen, onClose, user, groups, onSave }: UserModalPr
           </select>
         </div>
 
-        <div className="flex justify-end gap-3 pt-4 border-t border-slate-200">
+        <div className="flex flex-col-reverse sm:flex-row justify-end gap-3 pt-4 border-t border-slate-200">
           <button
             type="button"
             onClick={onClose}
-            className="px-4 py-2 text-slate-700 hover:bg-slate-100 rounded-lg transition-colors"
+            className="w-full sm:w-auto px-4 py-2.5 sm:py-2 text-slate-700 hover:bg-slate-100 rounded-lg transition-colors min-h-[44px]"
           >
             Cancel
           </button>
           <button
             type="submit"
             disabled={loading}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 transition-colors"
+            className="w-full sm:w-auto px-4 py-2.5 sm:py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 transition-colors min-h-[44px]"
           >
             {loading ? 'Saving...' : user ? 'Update User' : 'Add User'}
           </button>

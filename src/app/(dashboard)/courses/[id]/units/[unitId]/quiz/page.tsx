@@ -2,7 +2,6 @@
 
 import { useState, useEffect, use } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import {
   ArrowLeft,
   Clock,
@@ -58,7 +57,6 @@ export default function QuizPage({
   params: Promise<{ id: string; unitId: string }>;
 }) {
   const { id: courseId, unitId } = use(params);
-  const router = useRouter();
 
   const [course, setCourse] = useState<Course | null>(null);
   const [unit, setUnit] = useState<Unit | null>(null);
@@ -160,7 +158,6 @@ export default function QuizPage({
       setTimeRemaining((prev) => {
         if (prev === null || prev <= 1) {
           clearInterval(timer);
-          // Auto-submit when time runs out
           handleSubmit();
           return 0;
         }
@@ -242,7 +239,7 @@ export default function QuizPage({
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center p-4">
         <div className="text-slate-500">Loading quiz...</div>
       </div>
     );
@@ -250,10 +247,10 @@ export default function QuizPage({
 
   if (error) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center p-4">
         <div className="text-center">
           <AlertCircle className="w-12 h-12 text-red-500 mx-auto mb-4" />
-          <h2 className="text-xl font-semibold text-slate-900 mb-2">{error}</h2>
+          <h2 className="text-lg md:text-xl font-semibold text-slate-900 mb-2">{error}</h2>
           <Link
             href={`/learn/${courseId}`}
             className="text-blue-600 hover:underline"
@@ -268,46 +265,46 @@ export default function QuizPage({
   // Show results
   if (result) {
     return (
-      <div className="min-h-screen bg-slate-50 py-8">
-        <div className="max-w-2xl mx-auto px-4">
-          <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-8 text-center">
+      <div className="min-h-screen bg-slate-50 py-6 md:py-8 px-4">
+        <div className="max-w-2xl mx-auto">
+          <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6 md:p-8 text-center">
             {result.passed ? (
               <>
-                <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <CheckCircle2 className="w-10 h-10 text-green-600" />
+                <div className="w-16 md:w-20 h-16 md:h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4 md:mb-6">
+                  <CheckCircle2 className="w-8 md:w-10 h-8 md:h-10 text-green-600" />
                 </div>
-                <h1 className="text-2xl font-bold text-slate-900 mb-2">
+                <h1 className="text-xl md:text-2xl font-bold text-slate-900 mb-2">
                   Congratulations! 🎉
                 </h1>
-                <p className="text-slate-600 mb-6">You passed the quiz!</p>
+                <p className="text-slate-600 mb-4 md:mb-6">You passed the quiz!</p>
               </>
             ) : (
               <>
-                <div className="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <XCircle className="w-10 h-10 text-red-600" />
+                <div className="w-16 md:w-20 h-16 md:h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4 md:mb-6">
+                  <XCircle className="w-8 md:w-10 h-8 md:h-10 text-red-600" />
                 </div>
-                <h1 className="text-2xl font-bold text-slate-900 mb-2">
+                <h1 className="text-xl md:text-2xl font-bold text-slate-900 mb-2">
                   Not quite there
                 </h1>
-                <p className="text-slate-600 mb-6">
-                  You didn&apos;t pass this time. Review the material and try again!
+                <p className="text-slate-600 mb-4 md:mb-6">
+                  Review the material and try again!
                 </p>
               </>
             )}
 
-            <div className="bg-slate-50 rounded-lg p-6 mb-6">
-              <div className="text-5xl font-bold text-slate-900 mb-2">
+            <div className="bg-slate-50 rounded-lg p-4 md:p-6 mb-4 md:mb-6">
+              <div className="text-4xl md:text-5xl font-bold text-slate-900 mb-2">
                 {result.score}%
               </div>
-              <div className="text-slate-500">
+              <div className="text-sm md:text-base text-slate-500">
                 {result.earnedPoints} / {result.totalPoints} points
               </div>
             </div>
 
-            <div className="flex justify-center gap-4">
+            <div className="flex flex-col sm:flex-row justify-center gap-3 md:gap-4">
               <Link
                 href={`/learn/${courseId}`}
-                className="inline-flex items-center gap-2 px-4 py-2 border border-slate-300 rounded-lg hover:bg-slate-50"
+                className="inline-flex items-center justify-center gap-2 px-4 py-2.5 sm:py-2 border border-slate-300 rounded-lg hover:bg-slate-50 min-h-[44px]"
               >
                 <ArrowLeft className="w-4 h-4" />
                 Back to Course
@@ -315,7 +312,7 @@ export default function QuizPage({
               {!result.passed && (
                 <button
                   onClick={() => window.location.reload()}
-                  className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                  className="inline-flex items-center justify-center gap-2 px-4 py-2.5 sm:py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 min-h-[44px]"
                 >
                   <RotateCcw className="w-4 h-4" />
                   Try Again
@@ -324,7 +321,7 @@ export default function QuizPage({
               {result.passed && (
                 <Link
                   href="/my-certificates"
-                  className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                  className="inline-flex items-center justify-center gap-2 px-4 py-2.5 sm:py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 min-h-[44px]"
                 >
                   <Award className="w-4 h-4" />
                   View Certificate
@@ -341,25 +338,25 @@ export default function QuizPage({
     <div className="min-h-screen bg-slate-50">
       {/* Header */}
       <header className="bg-white border-b border-slate-200 sticky top-0 z-10">
-        <div className="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-4">
+        <div className="max-w-4xl mx-auto px-4 py-3 md:py-4 flex items-center justify-between gap-3">
+          <div className="flex items-center gap-3 md:gap-4 min-w-0">
             <Link
               href={`/learn/${courseId}`}
-              className="p-2 hover:bg-slate-100 rounded-lg"
+              className="p-2 hover:bg-slate-100 rounded-lg shrink-0"
             >
               <ArrowLeft className="w-5 h-5" />
             </Link>
-            <div>
-              <div className="text-sm text-slate-500">{course?.name}</div>
-              <h1 className="font-semibold text-slate-900">{unit?.name}</h1>
+            <div className="min-w-0">
+              <div className="text-xs md:text-sm text-slate-500 truncate">{course?.name}</div>
+              <h1 className="font-semibold text-slate-900 text-sm md:text-base truncate">{unit?.name}</h1>
             </div>
           </div>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 md:gap-4 shrink-0">
             {timeRemaining !== null && (
               <div
                 className={cn(
-                  'flex items-center gap-2 px-3 py-1.5 rounded-lg',
+                  'flex items-center gap-1.5 md:gap-2 px-2 md:px-3 py-1 md:py-1.5 rounded-lg text-sm',
                   timeRemaining < 60 ? 'bg-red-100 text-red-700' : 'bg-slate-100'
                 )}
               >
@@ -367,8 +364,8 @@ export default function QuizPage({
                 <span className="font-mono">{formatTime(timeRemaining)}</span>
               </div>
             )}
-            <div className="text-sm text-slate-500">
-              {answeredCount} / {totalQuestions} answered
+            <div className="text-xs md:text-sm text-slate-500">
+              {answeredCount}/{totalQuestions}
             </div>
           </div>
         </div>
@@ -383,7 +380,7 @@ export default function QuizPage({
                 key={q.id}
                 onClick={() => setCurrentQuestionIndex(i)}
                 className={cn(
-                  'flex-1 h-2 rounded-full transition-colors',
+                  'flex-1 h-2 rounded-full transition-colors min-w-[8px]',
                   i === currentQuestionIndex
                     ? 'bg-blue-600'
                     : answers.has(q.id)
@@ -397,30 +394,30 @@ export default function QuizPage({
       </div>
 
       {/* Question */}
-      <div className="max-w-4xl mx-auto px-4 py-8">
+      <div className="max-w-4xl mx-auto px-4 py-6 md:py-8">
         {currentQuestion && (
-          <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
-            <div className="flex items-center justify-between mb-4">
-              <span className="text-sm text-slate-500">
+          <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-4 md:p-6">
+            <div className="flex items-center justify-between mb-3 md:mb-4">
+              <span className="text-xs md:text-sm text-slate-500">
                 Question {currentQuestionIndex + 1} of {totalQuestions}
               </span>
-              <span className="text-sm text-slate-500">
-                {currentQuestion.points} point{currentQuestion.points !== 1 ? 's' : ''}
+              <span className="text-xs md:text-sm text-slate-500">
+                {currentQuestion.points} pt{currentQuestion.points !== 1 ? 's' : ''}
               </span>
             </div>
 
-            <h2 className="text-xl font-medium text-slate-900 mb-6">
+            <h2 className="text-base md:text-xl font-medium text-slate-900 mb-4 md:mb-6">
               {currentQuestion.question_text}
             </h2>
 
             {/* Multiple Choice */}
             {currentQuestion.type === 'multiple_choice' && (
-              <div className="space-y-3">
+              <div className="space-y-2 md:space-y-3">
                 {parseOptions(currentQuestion.options_json).map((option, idx) => (
                   <label
                     key={idx}
                     className={cn(
-                      'flex items-center gap-3 p-4 rounded-lg border cursor-pointer transition-colors',
+                      'flex items-center gap-3 p-3 md:p-4 rounded-lg border cursor-pointer transition-colors',
                       answers.get(currentQuestion.id) === option
                         ? 'border-blue-600 bg-blue-50'
                         : 'border-slate-200 hover:bg-slate-50'
@@ -434,9 +431,9 @@ export default function QuizPage({
                       onChange={(e) =>
                         handleAnswerChange(currentQuestion.id, e.target.value)
                       }
-                      className="w-4 h-4 text-blue-600"
+                      className="w-5 h-5 text-blue-600"
                     />
-                    <span>{option}</span>
+                    <span className="text-sm md:text-base">{option}</span>
                   </label>
                 ))}
               </div>
@@ -444,12 +441,12 @@ export default function QuizPage({
 
             {/* True/False */}
             {currentQuestion.type === 'true_false' && (
-              <div className="space-y-3">
+              <div className="space-y-2 md:space-y-3">
                 {['True', 'False'].map((option) => (
                   <label
                     key={option}
                     className={cn(
-                      'flex items-center gap-3 p-4 rounded-lg border cursor-pointer transition-colors',
+                      'flex items-center gap-3 p-3 md:p-4 rounded-lg border cursor-pointer transition-colors',
                       answers.get(currentQuestion.id) === option
                         ? 'border-blue-600 bg-blue-50'
                         : 'border-slate-200 hover:bg-slate-50'
@@ -463,9 +460,9 @@ export default function QuizPage({
                       onChange={(e) =>
                         handleAnswerChange(currentQuestion.id, e.target.value)
                       }
-                      className="w-4 h-4 text-blue-600"
+                      className="w-5 h-5 text-blue-600"
                     />
-                    <span>{option}</span>
+                    <span className="text-sm md:text-base">{option}</span>
                   </label>
                 ))}
               </div>
@@ -480,18 +477,18 @@ export default function QuizPage({
                   handleAnswerChange(currentQuestion.id, e.target.value)
                 }
                 placeholder="Type your answer..."
-                className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base"
               />
             )}
           </div>
         )}
 
         {/* Navigation */}
-        <div className="flex items-center justify-between mt-6">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 mt-4 md:mt-6">
           <button
             onClick={() => setCurrentQuestionIndex((i) => Math.max(0, i - 1))}
             disabled={currentQuestionIndex === 0}
-            className="flex items-center gap-2 px-4 py-2 border border-slate-300 rounded-lg hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex items-center justify-center gap-2 px-4 py-2.5 sm:py-2 border border-slate-300 rounded-lg hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed min-h-[44px] order-2 sm:order-1"
           >
             <ChevronLeft className="w-4 h-4" />
             Previous
@@ -501,7 +498,7 @@ export default function QuizPage({
             <button
               onClick={handleSubmit}
               disabled={submitting}
-              className="flex items-center gap-2 px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50"
+              className="flex items-center justify-center gap-2 px-6 py-2.5 sm:py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 min-h-[44px] order-1 sm:order-2"
             >
               {submitting ? 'Submitting...' : 'Submit Quiz'}
             </button>
@@ -510,7 +507,7 @@ export default function QuizPage({
               onClick={() =>
                 setCurrentQuestionIndex((i) => Math.min(questions.length - 1, i + 1))
               }
-              className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+              className="flex items-center justify-center gap-2 px-4 py-2.5 sm:py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 min-h-[44px] order-1 sm:order-2"
             >
               Next
               <ChevronRight className="w-4 h-4" />
