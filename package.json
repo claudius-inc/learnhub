@@ -6,7 +6,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "typecheck": "tsc --noEmit",
+    "migrate": "tsx scripts/migrate.ts",
+    "reset-db": "tsx scripts/reset-db.ts"
   },
   "dependencies": {
     "@auth/core": "^0.34.3",
