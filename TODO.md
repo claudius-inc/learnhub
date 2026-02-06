@@ -10,11 +10,11 @@
 - [ ] Create auth middleware for protected routes
 
 ### User Management
-- [ ] User CRUD API routes
-- [ ] Admin user list page with filters
-- [ ] Add/Edit user modal
-- [ ] Role selection (Admin, Instructor, Learner)
-- [ ] User groups CRUD
+- [x] User CRUD API routes
+- [x] Admin user list page with filters
+- [x] Add/Edit user modal
+- [x] Role selection (Admin, Instructor, Learner)
+- [x] User groups CRUD
 - [ ] CSV import for bulk user creation
 
 ### Admin Dashboard Shell
