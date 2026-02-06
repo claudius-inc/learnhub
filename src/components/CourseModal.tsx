@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { Sparkles, Loader2 } from 'lucide-react';
+import { useState, useEffect, useRef, useCallback } from 'react';
+import { Sparkles, Loader2, Upload, X, Image as ImageIcon } from 'lucide-react';
 import { Modal } from './Modal';
 
 type Category = {
@@ -54,6 +54,11 @@ export function CourseModal({ isOpen, onClose, course, categories, onSave }: Cou
     hidden: false,
     time_limit_days: '',
   });
+
+  // Image upload state
+  const [isDragging, setIsDragging] = useState(false);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // AI generation state
   const [showAiPanel, setShowAiPanel] = useState(false);
@@ -113,6 +118,65 @@ export function CourseModal({ isOpen, onClose, course, categories, onSave }: Cou
     setShowAiPanel(false);
   };
 
+  // Handle file selection and convert to base64
+  const handleFileSelect = useCallback((file: File) => {
+    if (!file.type.startsWith('image/')) {
+      setError('Please select an image file');
+      return;
+    }
+    // Limit to 2MB for base64 storage
+    if (file.size > 2 * 1024 * 1024) {
+      setError('Image must be less than 2MB');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const dataUrl = e.target?.result as string;
+      setImagePreview(dataUrl);
+      setFormData(prev => ({ ...prev, thumbnail_url: dataUrl }));
+    };
+    reader.onerror = () => {
+      setError('Failed to read image file');
+    };
+    reader.readAsDataURL(file);
+  }, []);
+
+  // Handle drag events
+  const handleDragOver = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(true);
+  }, []);
+
+  const handleDragLeave = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+  }, []);
+
+  const handleDrop = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+    const file = e.dataTransfer.files[0];
+    if (file) {
+      handleFileSelect(file);
+    }
+  }, [handleFileSelect]);
+
+  const handleFileInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      handleFileSelect(file);
+    }
+  }, [handleFileSelect]);
+
+  const clearImage = useCallback(() => {
+    setImagePreview(null);
+    setFormData(prev => ({ ...prev, thumbnail_url: '' }));
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  }, []);
+
   useEffect(() => {
     if (course) {
       setFormData({
@@ -141,6 +205,9 @@ export function CourseModal({ isOpen, onClose, course, categories, onSave }: Cou
     setAiTopic('');
     setAiError('');
     setGeneratedOutline(null);
+    // Reset image preview
+    setImagePreview(course?.thumbnail_url || null);
+    setIsDragging(false);
   }, [course, isOpen]);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -353,17 +420,84 @@ export function CourseModal({ isOpen, onClose, course, categories, onSave }: Cou
           />
         </div>
 
+        {/* Thumbnail Upload/URL */}
         <div>
           <label className="block text-sm font-medium text-slate-700 mb-1">
-            Thumbnail URL
+            Thumbnail Image
           </label>
-          <input
-            type="url"
-            value={formData.thumbnail_url}
-            onChange={(e) => setFormData({ ...formData, thumbnail_url: e.target.value })}
-            placeholder="https://example.com/image.jpg"
-            className="w-full px-3 py-2.5 sm:py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base"
-          />
+          
+          {/* Image Preview */}
+          {(imagePreview || formData.thumbnail_url) && (
+            <div className="relative mb-3 inline-block">
+              <img
+                src={imagePreview || formData.thumbnail_url}
+                alt="Thumbnail preview"
+                className="h-24 w-auto rounded-lg border border-slate-200 object-cover"
+                onError={() => setImagePreview(null)}
+              />
+              <button
+                type="button"
+                onClick={clearImage}
+                className="absolute -top-2 -right-2 p-1 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors"
+              >
+                <X className="w-3 h-3" />
+              </button>
+            </div>
+          )}
+
+          {/* Drag & Drop Zone */}
+          <div
+            onDragOver={handleDragOver}
+            onDragLeave={handleDragLeave}
+            onDrop={handleDrop}
+            onClick={() => fileInputRef.current?.click()}
+            className={`
+              relative border-2 border-dashed rounded-lg p-4 text-center cursor-pointer transition-colors
+              ${isDragging 
+                ? 'border-blue-500 bg-blue-50' 
+                : 'border-slate-300 hover:border-slate-400 hover:bg-slate-50'
+              }
+            `}
+          >
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              onChange={handleFileInputChange}
+              className="hidden"
+            />
+            <div className="flex flex-col items-center gap-2">
+              {isDragging ? (
+                <ImageIcon className="w-8 h-8 text-blue-500" />
+              ) : (
+                <Upload className="w-8 h-8 text-slate-400" />
+              )}
+              <div className="text-sm">
+                <span className="text-blue-600 font-medium">Click to upload</span>
+                <span className="text-slate-500"> or drag and drop</span>
+              </div>
+              <p className="text-xs text-slate-400">PNG, JPG up to 2MB</p>
+            </div>
+          </div>
+
+          {/* URL Input Fallback */}
+          <div className="mt-3">
+            <div className="flex items-center gap-2 mb-1">
+              <div className="flex-1 h-px bg-slate-200"></div>
+              <span className="text-xs text-slate-400">or enter URL</span>
+              <div className="flex-1 h-px bg-slate-200"></div>
+            </div>
+            <input
+              type="url"
+              value={formData.thumbnail_url.startsWith('data:') ? '' : formData.thumbnail_url}
+              onChange={(e) => {
+                setFormData({ ...formData, thumbnail_url: e.target.value });
+                setImagePreview(e.target.value || null);
+              }}
+              placeholder="https://example.com/image.jpg"
+              className="w-full px-3 py-2.5 sm:py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base"
+            />
+          </div>
         </div>
 
         {/* Stack on mobile, 2 cols on desktop */}

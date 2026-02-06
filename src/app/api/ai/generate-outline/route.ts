@@ -34,7 +34,9 @@ export async function POST(request: NextRequest) {
     }
 
     const apiKey = process.env.GEMINI_API_KEY;
+    console.log('[AI Generate] GEMINI_API_KEY present:', !!apiKey, 'length:', apiKey?.length || 0);
     if (!apiKey) {
+      console.error('[AI Generate] GEMINI_API_KEY is not set in environment');
       return NextResponse.json(
         { error: 'AI service not configured' },
         { status: 503 }
