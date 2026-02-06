@@ -33,12 +33,12 @@
 - [x] Course settings (time limits, hidden, status)
 
 ### Course Builder
-- [ ] Drag-drop section/unit reordering
-- [ ] Unit type selector (text, video, quiz, document, survey, link)
-- [ ] Rich text editor for text units (TipTap or similar)
-- [ ] YouTube/Vimeo video embed
+- [x] Drag-drop section/unit reordering (up/down buttons MVP)
+- [x] Unit type selector (text, video, quiz, document, survey, link)
+- [x] Rich text editor for text units (textarea for MVP)
+- [x] YouTube/Vimeo video embed
 - [ ] Document viewer (PDF.js)
-- [ ] External link embed/iframe
+- [x] External link embed/iframe
 
 ### Categories
 - [x] Category CRUD API (/api/categories)
@@ -48,22 +48,22 @@
 ## Phase 3: Learning Experience (Week 3)
 
 ### Learner Dashboard
-- [ ] My Courses list with progress bars
-- [ ] Continue Learning card (resume last course)
-- [ ] Course catalog (browse and self-enroll)
+- [x] My Courses list with progress bars
+- [x] Continue Learning card (resume last course)
+- [x] Course catalog (browse and self-enroll)
 - [ ] My Certificates section
 
 ### Course Player
-- [ ] Clean player UI with sidebar navigation
-- [ ] Progress tracking (auto-save on unit completion)
-- [ ] Mark as complete button
-- [ ] Next/Previous navigation
+- [x] Clean player UI with sidebar navigation
+- [x] Progress tracking (auto-save on unit completion)
+- [x] Mark as complete button
+- [x] Next/Previous navigation
 - [ ] Mobile responsive player
 
 ### Enrollment
-- [ ] Enroll users in courses (admin)
-- [ ] Self-enrollment toggle per course
-- [ ] Enrollment status tracking (not started, in progress, completed)
+- [x] Enroll users in courses (admin)
+- [x] Self-enrollment toggle per course
+- [x] Enrollment status tracking (not started, in progress, completed)
 
 ## Phase 4: Assessments & Certificates (Week 4)
 
@@ -132,7 +132,7 @@
 
 ## Current Sprint
 
-**Focus:** Phase 2 - Course Engine
+**Focus:** Phase 3 - Learning Experience ✓
 
 **Completed:**
 - Categories CRUD API and management page
@@ -140,5 +140,10 @@
 - Course list page with card grid view
 - Course detail page with sections/units display
 - CourseModal and CategoryModal components
+- Course Builder (/courses/[id]/edit) with sections/units CRUD and reordering
+- Enrollments API with self-enrollment support
+- Learner dashboard (/my-courses) with progress tracking
+- Course catalog (/catalog) for browsing and self-enrollment
+- Course player (/learn/[id]) with progress tracking
 
-**Next task:** Course Builder - section/unit CRUD and drag-drop reordering
+**Next task:** Phase 4 - Quiz engine and certificates
