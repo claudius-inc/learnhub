@@ -103,10 +103,11 @@ export function CategoryModal({ isOpen, onClose, category, onSave }: CategoryMod
         )}
 
         <div>
-          <label className="block text-sm font-medium text-slate-700 mb-1">
+          <label htmlFor="name" className="block text-sm font-medium text-slate-700 mb-1">
             Name
           </label>
           <input
+            id="name"
             type="text"
             value={formData.name}
             onChange={(e) => setFormData({ ...formData, name: e.target.value })}

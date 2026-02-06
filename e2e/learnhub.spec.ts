@@ -264,7 +264,7 @@ test.describe('Other Pages', () => {
   test('should load catalog page', async ({ page }) => {
     await page.goto('/catalog');
     await page.waitForLoadState('networkidle');
-    await expect(page.locator('h1')).toContainText(/Catalog/);
+    await expect(page.locator('h1')).toContainText(/Course Catalog/);
   });
 
   test('should load my courses page', async ({ page }) => {
@@ -276,7 +276,7 @@ test.describe('Other Pages', () => {
   test('should load questions page', async ({ page }) => {
     await page.goto('/questions');
     await page.waitForLoadState('networkidle');
-    await expect(page.locator('h1')).toContainText(/Question/);
+    await expect(page.locator('h1')).toContainText(/Question Bank/);
   });
 });
 
