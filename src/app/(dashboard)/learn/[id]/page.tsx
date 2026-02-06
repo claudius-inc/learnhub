@@ -399,7 +399,22 @@ export default function LearnPage({ params }: { params: Promise<{ id: string }> 
 
             {/* Unit Content */}
             <div className="bg-white rounded-xl border border-slate-200 p-6 mb-6">
-              {activeUnit.type === 'video' && activeUnit.content ? (
+              {activeUnit.type === 'quiz' ? (
+                <div className="text-center py-8">
+                  <HelpCircle className="w-12 h-12 text-blue-500 mx-auto mb-4" />
+                  <h3 className="text-lg font-semibold text-slate-900 mb-2">Quiz Time!</h3>
+                  <p className="text-slate-600 mb-6">
+                    Test your knowledge with this quiz. Good luck!
+                  </p>
+                  <Link
+                    href={`/courses/${courseId}/units/${activeUnit.id}/quiz`}
+                    className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-lg"
+                  >
+                    <Play className="w-5 h-5" />
+                    Start Quiz
+                  </Link>
+                </div>
+              ) : activeUnit.type === 'video' && activeUnit.content ? (
                 renderVideoEmbed(activeUnit.content)
               ) : activeUnit.type === 'link' && activeUnit.content ? (
                 <div className="text-center py-8">
@@ -442,7 +457,7 @@ export default function LearnPage({ params }: { params: Promise<{ id: string }> 
               </div>
 
               <div className="flex items-center gap-3">
-                {!isUnitCompleted(activeUnit.id) && (
+                {!isUnitCompleted(activeUnit.id) && activeUnit.type !== 'quiz' && (
                   <button
                     onClick={handleMarkComplete}
                     disabled={completing}
