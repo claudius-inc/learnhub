@@ -9,6 +9,10 @@ import {
   Clock,
   ChevronRight,
   Search,
+  Trophy,
+  Star,
+  Award,
+  TrendingUp,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -27,6 +31,25 @@ type Enrollment = {
   category_color: string | null;
 };
 
+type UserPoints = {
+  user_id: string;
+  total_points: number;
+  level: number;
+};
+
+type UserBadge = {
+  badge_id: string;
+  badge_name: string;
+  badge_description: string;
+  badge_icon_url: string | null;
+  earned_at: string;
+};
+
+const LEVEL_NAMES = [
+  'Beginner', 'Novice', 'Apprentice', 'Journeyman', 'Expert',
+  'Master', 'Grandmaster', 'Legend', 'Champion', 'Transcendent',
+];
+
 const statusConfig = {
   not_started: { label: 'Not Started', color: 'bg-slate-100 text-slate-600', icon: Clock },
   in_progress: { label: 'In Progress', color: 'bg-blue-100 text-blue-600', icon: Play },
@@ -38,6 +61,9 @@ export default function MyCoursesPage() {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<'all' | 'in_progress' | 'completed'>('all');
   const [search, setSearch] = useState('');
+  const [points, setPoints] = useState<UserPoints | null>(null);
+  const [badges, setBadges] = useState<UserBadge[]>([]);
+  const [nextLevel, setNextLevel] = useState<{ level: number; pointsNeeded: number; progress: number } | null>(null);
 
   const fetchEnrollments = async () => {
     setLoading(true);
@@ -52,8 +78,31 @@ export default function MyCoursesPage() {
     }
   };
 
+  const fetchPoints = async () => {
+    try {
+      const res = await fetch('/api/points');
+      const data = await res.json();
+      setPoints(data.points);
+      setNextLevel(data.nextLevel);
+    } catch (error) {
+      console.error('Failed to fetch points:', error);
+    }
+  };
+
+  const fetchBadges = async () => {
+    try {
+      const res = await fetch('/api/badges');
+      const data = await res.json();
+      setBadges(data.userBadges || []);
+    } catch (error) {
+      console.error('Failed to fetch badges:', error);
+    }
+  };
+
   useEffect(() => {
     fetchEnrollments();
+    fetchPoints();
+    fetchBadges();
   }, []);
 
   const filteredEnrollments = enrollments.filter((e) => {
@@ -112,6 +161,91 @@ export default function MyCoursesPage() {
           </div>
         </div>
       )}
+
+      {/* Gamification Section */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
+        {/* Points & Level Card */}
+        <div className="bg-gradient-to-br from-amber-50 to-orange-50 rounded-xl border border-amber-200 p-4">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-amber-100 rounded-lg">
+                <Trophy className="w-6 h-6 text-amber-600" />
+              </div>
+              <div>
+                <p className="text-sm text-amber-700">Your Level</p>
+                <h3 className="text-xl font-bold text-amber-900">
+                  {points ? `Level ${points.level}` : 'Level 1'}
+                </h3>
+                <p className="text-xs text-amber-600">
+                  {points ? LEVEL_NAMES[Math.min(points.level - 1, LEVEL_NAMES.length - 1)] : LEVEL_NAMES[0]}
+                </p>
+              </div>
+            </div>
+            <div className="text-right">
+              <p className="text-3xl font-bold text-amber-900">{points?.total_points || 0}</p>
+              <p className="text-sm text-amber-600">points</p>
+            </div>
+          </div>
+          {nextLevel && nextLevel.progress < 100 && (
+            <div className="mt-2">
+              <div className="flex justify-between text-xs text-amber-600 mb-1">
+                <span>Progress to Level {nextLevel.level}</span>
+                <span>{nextLevel.progress}%</span>
+              </div>
+              <div className="bg-amber-200 rounded-full h-2">
+                <div
+                  className="bg-amber-500 rounded-full h-2 transition-all"
+                  style={{ width: `${nextLevel.progress}%` }}
+                />
+              </div>
+            </div>
+          )}
+          <Link
+            href="/leaderboard"
+            className="mt-3 flex items-center gap-1 text-sm text-amber-700 hover:text-amber-900"
+          >
+            <TrendingUp className="w-4 h-4" />
+            View Leaderboard
+            <ChevronRight className="w-4 h-4" />
+          </Link>
+        </div>
+
+        {/* Badges Card */}
+        <div className="bg-gradient-to-br from-purple-50 to-indigo-50 rounded-xl border border-purple-200 p-4">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="p-2 bg-purple-100 rounded-lg">
+              <Award className="w-6 h-6 text-purple-600" />
+            </div>
+            <div>
+              <p className="text-sm text-purple-700">Badges Earned</p>
+              <h3 className="text-xl font-bold text-purple-900">{badges.length}</h3>
+            </div>
+          </div>
+          {badges.length > 0 ? (
+            <div className="flex flex-wrap gap-2">
+              {badges.slice(0, 4).map((badge) => (
+                <div
+                  key={badge.badge_id}
+                  className="flex items-center gap-2 px-3 py-1.5 bg-white rounded-full border border-purple-200"
+                  title={badge.badge_description}
+                >
+                  <Star className="w-4 h-4 text-purple-500" />
+                  <span className="text-sm text-purple-700">{badge.badge_name}</span>
+                </div>
+              ))}
+              {badges.length > 4 && (
+                <span className="px-3 py-1.5 text-sm text-purple-600">
+                  +{badges.length - 4} more
+                </span>
+              )}
+            </div>
+          ) : (
+            <p className="text-sm text-purple-600">
+              Complete courses and quizzes to earn badges!
+            </p>
+          )}
+        </div>
+      </div>
 
       {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">

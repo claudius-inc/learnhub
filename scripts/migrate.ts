@@ -84,6 +84,32 @@ async function migrate() {
     console.log('Certificate template might already exist');
   }
 
+  // Create default badges
+  const defaultBadges = [
+    { name: 'First Steps', description: 'Complete your first course', criteria: { type: 'course_count', value: 1 } },
+    { name: 'Scholar', description: 'Complete 5 courses', criteria: { type: 'course_count', value: 5 } },
+    { name: 'Expert', description: 'Complete 10 courses', criteria: { type: 'course_count', value: 10 } },
+    { name: 'Quiz Master', description: 'Pass 10 quizzes with 80% or higher', criteria: { type: 'quiz_pass_count', value: 10 } },
+    { name: 'Perfectionist', description: 'Get 100% on 5 quizzes', criteria: { type: 'quiz_perfect_count', value: 5 } },
+    { name: 'Rising Star', description: 'Reach Level 5', criteria: { type: 'level', value: 5 } },
+    { name: 'Champion', description: 'Reach Level 10', criteria: { type: 'level', value: 10 } },
+    { name: 'Point Collector', description: 'Earn 1000 points', criteria: { type: 'points', value: 1000 } },
+  ];
+
+  console.log('\nSeeding default badges...');
+  for (const badge of defaultBadges) {
+    const badgeId = uuidv4().replace(/-/g, '');
+    try {
+      await db.execute({
+        sql: `INSERT OR IGNORE INTO badges (id, name, description, criteria_json) VALUES (?, ?, ?, ?)`,
+        args: [badgeId, badge.name, badge.description, JSON.stringify(badge.criteria)]
+      });
+      console.log('✓', badge.name);
+    } catch (error) {
+      console.log('Badge might already exist:', badge.name);
+    }
+  }
+
   console.log('\n✅ Migration complete!');
 }
 

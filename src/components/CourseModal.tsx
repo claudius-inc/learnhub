@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { Sparkles, Loader2 } from 'lucide-react';
 import { Modal } from './Modal';
 
 type Category = {
@@ -18,6 +19,19 @@ type Course = {
   status: 'draft' | 'published' | 'archived';
   hidden: number;
   time_limit_days: number | null;
+};
+
+type GeneratedOutline = {
+  name: string;
+  description: string;
+  sections: {
+    name: string;
+    units: {
+      name: string;
+      type: 'text' | 'video' | 'quiz';
+      description: string;
+    }[];
+  }[];
 };
 
 interface CourseModalProps {
@@ -40,6 +54,64 @@ export function CourseModal({ isOpen, onClose, course, categories, onSave }: Cou
     hidden: false,
     time_limit_days: '',
   });
+
+  // AI generation state
+  const [showAiPanel, setShowAiPanel] = useState(false);
+  const [aiTopic, setAiTopic] = useState('');
+  const [aiLevel, setAiLevel] = useState('intermediate');
+  const [aiUnitCount, setAiUnitCount] = useState(5);
+  const [aiLoading, setAiLoading] = useState(false);
+  const [aiError, setAiError] = useState('');
+  const [generatedOutline, setGeneratedOutline] = useState<GeneratedOutline | null>(null);
+
+  const handleAiGenerate = async () => {
+    if (!aiTopic.trim()) return;
+    
+    setAiLoading(true);
+    setAiError('');
+    setGeneratedOutline(null);
+
+    try {
+      const res = await fetch('/api/ai/generate-outline', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          topic: aiTopic,
+          level: aiLevel,
+          unitCount: aiUnitCount,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setAiError(data.error || 'Failed to generate outline');
+        return;
+      }
+
+      setGeneratedOutline(data.outline);
+      // Auto-fill form with generated content
+      setFormData(prev => ({
+        ...prev,
+        name: data.outline.name,
+        description: data.outline.description,
+      }));
+    } catch {
+      setAiError('Failed to connect to AI service');
+    } finally {
+      setAiLoading(false);
+    }
+  };
+
+  const applyOutline = () => {
+    if (!generatedOutline) return;
+    setFormData(prev => ({
+      ...prev,
+      name: generatedOutline.name,
+      description: generatedOutline.description,
+    }));
+    setShowAiPanel(false);
+  };
 
   useEffect(() => {
     if (course) {
@@ -64,6 +136,11 @@ export function CourseModal({ isOpen, onClose, course, categories, onSave }: Cou
       });
     }
     setError('');
+    // Reset AI state
+    setShowAiPanel(false);
+    setAiTopic('');
+    setAiError('');
+    setGeneratedOutline(null);
   }, [course, isOpen]);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -118,6 +195,135 @@ export function CourseModal({ isOpen, onClose, course, categories, onSave }: Cou
         {error && (
           <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
             {error}
+          </div>
+        )}
+
+        {/* AI Generate Panel */}
+        {!course && (
+          <div className="border border-purple-200 rounded-lg overflow-hidden">
+            <button
+              type="button"
+              onClick={() => setShowAiPanel(!showAiPanel)}
+              className="w-full flex items-center justify-between px-4 py-3 bg-gradient-to-r from-purple-50 to-indigo-50 hover:from-purple-100 hover:to-indigo-100 transition-colors"
+            >
+              <div className="flex items-center gap-2">
+                <Sparkles className="w-5 h-5 text-purple-600" />
+                <span className="font-medium text-purple-900">AI Generate Outline</span>
+              </div>
+              <span className="text-sm text-purple-600">{showAiPanel ? 'Hide' : 'Expand'}</span>
+            </button>
+            
+            {showAiPanel && (
+              <div className="p-4 bg-white border-t border-purple-100 space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-1">
+                    Course Topic
+                  </label>
+                  <input
+                    type="text"
+                    value={aiTopic}
+                    onChange={(e) => setAiTopic(e.target.value)}
+                    placeholder="e.g., Introduction to Python Programming"
+                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                  />
+                </div>
+                
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-1">
+                      Difficulty Level
+                    </label>
+                    <select
+                      value={aiLevel}
+                      onChange={(e) => setAiLevel(e.target.value)}
+                      className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    >
+                      <option value="beginner">Beginner</option>
+                      <option value="intermediate">Intermediate</option>
+                      <option value="advanced">Advanced</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-1">
+                      ~Number of Units
+                    </label>
+                    <input
+                      type="number"
+                      value={aiUnitCount}
+                      onChange={(e) => setAiUnitCount(Math.max(1, Math.min(15, parseInt(e.target.value) || 5)))}
+                      min={1}
+                      max={15}
+                      className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    />
+                  </div>
+                </div>
+
+                {aiError && (
+                  <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
+                    {aiError}
+                  </div>
+                )}
+
+                <button
+                  type="button"
+                  onClick={handleAiGenerate}
+                  disabled={aiLoading || !aiTopic.trim()}
+                  className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-lg hover:from-purple-700 hover:to-indigo-700 disabled:opacity-50 transition-all"
+                >
+                  {aiLoading ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      Generating...
+                    </>
+                  ) : (
+                    <>
+                      <Sparkles className="w-4 h-4" />
+                      Generate Outline
+                    </>
+                  )}
+                </button>
+
+                {/* Generated Outline Preview */}
+                {generatedOutline && (
+                  <div className="border border-green-200 rounded-lg p-4 bg-green-50">
+                    <div className="flex items-center justify-between mb-3">
+                      <h4 className="font-semibold text-green-800">Generated Outline</h4>
+                      <button
+                        type="button"
+                        onClick={applyOutline}
+                        className="px-3 py-1 bg-green-600 text-white text-sm rounded hover:bg-green-700"
+                      >
+                        Apply & Close
+                      </button>
+                    </div>
+                    <p className="text-sm font-medium text-slate-900">{generatedOutline.name}</p>
+                    <p className="text-sm text-slate-600 mb-3">{generatedOutline.description}</p>
+                    <div className="space-y-2 text-sm">
+                      {generatedOutline.sections.map((section, i) => (
+                        <div key={i}>
+                          <p className="font-medium text-slate-700">{section.name}</p>
+                          <ul className="ml-4 text-slate-500">
+                            {section.units.map((unit, j) => (
+                              <li key={j} className="flex items-center gap-2">
+                                <span className={`px-1.5 py-0.5 text-xs rounded ${
+                                  unit.type === 'quiz' ? 'bg-amber-100 text-amber-700' :
+                                  unit.type === 'video' ? 'bg-blue-100 text-blue-700' :
+                                  'bg-slate-100 text-slate-600'
+                                }`}>{unit.type}</span>
+                                {unit.name}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      ))}
+                    </div>
+                    <p className="text-xs text-slate-500 mt-3">
+                      Note: The outline preview is for reference. Units will need to be created manually after saving the course.
+                    </p>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         )}
 

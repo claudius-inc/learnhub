@@ -11,7 +11,9 @@ import {
   GraduationCap,
   Award,
   Map,
-  FolderKanban
+  FolderKanban,
+  Trophy,
+  HelpCircle
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { User } from '@/lib/auth';
@@ -21,9 +23,11 @@ const adminNav = [
   { name: 'Users', href: '/users', icon: Users },
   { name: 'Groups', href: '/groups', icon: FolderKanban },
   { name: 'Courses', href: '/courses', icon: BookOpen },
+  { name: 'Question Bank', href: '/questions', icon: HelpCircle },
   { name: 'Learning Paths', href: '/paths', icon: Map },
   { name: 'Categories', href: '/categories', icon: FolderKanban },
   { name: 'Certificates', href: '/certificates', icon: Award },
+  { name: 'Leaderboard', href: '/leaderboard', icon: Trophy },
   { name: 'Reports', href: '/reports', icon: BarChart3 },
   { name: 'Settings', href: '/settings', icon: Settings },
 ];
@@ -39,6 +43,7 @@ const learnerNav = [
   { name: 'Dashboard', href: '/', icon: LayoutDashboard },
   { name: 'My Courses', href: '/my-courses', icon: BookOpen },
   { name: 'Course Catalog', href: '/catalog', icon: GraduationCap },
+  { name: 'Leaderboard', href: '/leaderboard', icon: Trophy },
   { name: 'Certificates', href: '/my-certificates', icon: Award },
 ];
 
