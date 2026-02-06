@@ -51,7 +51,7 @@
 - [x] My Courses list with progress bars
 - [x] Continue Learning card (resume last course)
 - [x] Course catalog (browse and self-enroll)
-- [ ] My Certificates section
+- [x] My Certificates section
 
 ### Course Player
 - [x] Clean player UI with sidebar navigation
@@ -68,11 +68,11 @@
 ## Phase 4: Assessments & Certificates (Week 4)
 
 ### Quiz Engine
-- [ ] Question types: Multiple choice, True/False, Fill-in-blank, Matching
-- [ ] Question bank per course
-- [ ] Quiz settings (pass threshold, retries, time limit, randomization)
-- [ ] Quiz taking interface
-- [ ] Quiz results with feedback
+- [x] Question types: Multiple choice, True/False, Fill-in-blank, Matching
+- [x] Question bank per course
+- [x] Quiz settings (pass threshold, retries, time limit, randomization)
+- [x] Quiz taking interface
+- [x] Quiz results with feedback
 
 ### Surveys
 - [ ] Survey questions (text, rating, multiple choice)
@@ -80,11 +80,11 @@
 - [ ] Export survey responses
 
 ### Certificates
-- [ ] Certificate template editor
-- [ ] Auto-generate on course completion
-- [ ] PDF download
-- [ ] Public verification URL
-- [ ] Expiration dates for compliance
+- [x] Certificate template editor
+- [x] Auto-generate on course completion
+- [x] PDF download (as image via canvas)
+- [x] Public verification URL
+- [x] Expiration dates for compliance
 
 ## Phase 5: AI & Gamification (Week 5)
 
@@ -132,7 +132,7 @@
 
 ## Current Sprint
 
-**Focus:** Phase 3 - Learning Experience ✓
+**Focus:** Phase 4 - Assessments & Certificates ✓
 
 **Completed:**
 - Categories CRUD API and management page
@@ -145,5 +145,13 @@
 - Learner dashboard (/my-courses) with progress tracking
 - Course catalog (/catalog) for browsing and self-enrollment
 - Course player (/learn/[id]) with progress tracking
+- Questions API (/api/questions) with CRUD and filtering
+- Quiz attempts API (/api/quiz-attempts) for taking quizzes
+- Quiz taking page (/courses/[id]/units/[unitId]/quiz)
+- Certificates API (/api/certificates) with auto-generation
+- Public certificate verification (/verify/[code])
+- My Certificates page for learners
+- Admin certificates management page
+- Question bank management page (/questions)
 
-**Next task:** Phase 4 - Quiz engine and certificates
+**Next task:** Phase 5 - AI & Gamification
