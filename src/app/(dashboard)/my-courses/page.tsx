@@ -121,39 +121,39 @@ export default function MyCoursesPage() {
 
   if (loading) {
     return (
-      <div className="p-6">
+      <div>
         <div className="text-center py-12 text-slate-500">Loading...</div>
       </div>
     );
   }
 
   return (
-    <div className="p-6">
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-slate-900">My Courses</h1>
-        <p className="text-slate-500">Track your learning progress</p>
+    <div>
+      <div className="mb-4 md:mb-6">
+        <h1 className="text-xl md:text-2xl font-bold text-slate-900">My Courses</h1>
+        <p className="text-sm md:text-base text-slate-500">Track your learning progress</p>
       </div>
 
       {/* Continue Learning Card */}
       {continueEnrollment && (
-        <div className="mb-6 bg-gradient-to-r from-blue-600 to-blue-700 rounded-xl p-6 text-white">
-          <div className="flex items-center justify-between">
-            <div>
+        <div className="mb-4 md:mb-6 bg-gradient-to-r from-blue-600 to-blue-700 rounded-xl p-4 md:p-6 text-white">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="min-w-0">
               <p className="text-blue-200 text-sm mb-1">Continue Learning</p>
-              <h2 className="text-xl font-semibold mb-2">{continueEnrollment.course_name}</h2>
-              <div className="flex items-center gap-4">
-                <div className="flex-1 bg-blue-500/30 rounded-full h-2 w-48">
+              <h2 className="text-lg md:text-xl font-semibold mb-2 truncate">{continueEnrollment.course_name}</h2>
+              <div className="flex items-center gap-3 md:gap-4">
+                <div className="flex-1 bg-blue-500/30 rounded-full h-2 max-w-[200px] md:w-48">
                   <div
                     className="bg-white rounded-full h-2 transition-all"
                     style={{ width: `${continueEnrollment.progress_pct}%` }}
                   />
                 </div>
-                <span className="text-sm text-blue-200">{continueEnrollment.progress_pct}% complete</span>
+                <span className="text-sm text-blue-200 shrink-0">{continueEnrollment.progress_pct}% complete</span>
               </div>
             </div>
             <Link
               href={`/learn/${continueEnrollment.course_id}`}
-              className="flex items-center gap-2 px-4 py-2 bg-white text-blue-600 rounded-lg hover:bg-blue-50 transition-colors font-medium"
+              className="flex items-center justify-center gap-2 px-4 py-2 bg-white text-blue-600 rounded-lg hover:bg-blue-50 transition-colors font-medium w-full sm:w-auto"
             >
               <Play className="w-4 h-4" />
               Resume
@@ -162,18 +162,18 @@ export default function MyCoursesPage() {
         </div>
       )}
 
-      {/* Gamification Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
+      {/* Gamification Section - stack on mobile */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4 md:mb-6">
         {/* Points & Level Card */}
         <div className="bg-gradient-to-br from-amber-50 to-orange-50 rounded-xl border border-amber-200 p-4">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-3">
               <div className="p-2 bg-amber-100 rounded-lg">
-                <Trophy className="w-6 h-6 text-amber-600" />
+                <Trophy className="w-5 md:w-6 h-5 md:h-6 text-amber-600" />
               </div>
               <div>
                 <p className="text-sm text-amber-700">Your Level</p>
-                <h3 className="text-xl font-bold text-amber-900">
+                <h3 className="text-lg md:text-xl font-bold text-amber-900">
                   {points ? `Level ${points.level}` : 'Level 1'}
                 </h3>
                 <p className="text-xs text-amber-600">
@@ -182,7 +182,7 @@ export default function MyCoursesPage() {
               </div>
             </div>
             <div className="text-right">
-              <p className="text-3xl font-bold text-amber-900">{points?.total_points || 0}</p>
+              <p className="text-2xl md:text-3xl font-bold text-amber-900">{points?.total_points || 0}</p>
               <p className="text-sm text-amber-600">points</p>
             </div>
           </div>
@@ -214,11 +214,11 @@ export default function MyCoursesPage() {
         <div className="bg-gradient-to-br from-purple-50 to-indigo-50 rounded-xl border border-purple-200 p-4">
           <div className="flex items-center gap-3 mb-4">
             <div className="p-2 bg-purple-100 rounded-lg">
-              <Award className="w-6 h-6 text-purple-600" />
+              <Award className="w-5 md:w-6 h-5 md:h-6 text-purple-600" />
             </div>
             <div>
               <p className="text-sm text-purple-700">Badges Earned</p>
-              <h3 className="text-xl font-bold text-purple-900">{badges.length}</h3>
+              <h3 className="text-lg md:text-xl font-bold text-purple-900">{badges.length}</h3>
             </div>
           </div>
           {badges.length > 0 ? (
@@ -226,15 +226,15 @@ export default function MyCoursesPage() {
               {badges.slice(0, 4).map((badge) => (
                 <div
                   key={badge.badge_id}
-                  className="flex items-center gap-2 px-3 py-1.5 bg-white rounded-full border border-purple-200"
+                  className="flex items-center gap-2 px-2 md:px-3 py-1.5 bg-white rounded-full border border-purple-200"
                   title={badge.badge_description}
                 >
-                  <Star className="w-4 h-4 text-purple-500" />
-                  <span className="text-sm text-purple-700">{badge.badge_name}</span>
+                  <Star className="w-3.5 md:w-4 h-3.5 md:h-4 text-purple-500" />
+                  <span className="text-xs md:text-sm text-purple-700">{badge.badge_name}</span>
                 </div>
               ))}
               {badges.length > 4 && (
-                <span className="px-3 py-1.5 text-sm text-purple-600">
+                <span className="px-2 md:px-3 py-1.5 text-xs md:text-sm text-purple-600">
                   +{badges.length - 4} more
                 </span>
               )}
@@ -247,40 +247,40 @@ export default function MyCoursesPage() {
         </div>
       </div>
 
-      {/* Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+      {/* Stats - 1 col on mobile */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4 md:mb-6">
         <div className="bg-white rounded-xl border border-slate-200 p-4 flex items-center gap-4">
-          <div className="p-3 bg-blue-100 rounded-lg">
-            <BookOpen className="w-6 h-6 text-blue-600" />
+          <div className="p-2.5 md:p-3 bg-blue-100 rounded-lg">
+            <BookOpen className="w-5 md:w-6 h-5 md:h-6 text-blue-600" />
           </div>
           <div>
-            <p className="text-2xl font-bold text-slate-900">{enrollments.length}</p>
+            <p className="text-xl md:text-2xl font-bold text-slate-900">{enrollments.length}</p>
             <p className="text-sm text-slate-500">Total Courses</p>
           </div>
         </div>
         <div className="bg-white rounded-xl border border-slate-200 p-4 flex items-center gap-4">
-          <div className="p-3 bg-amber-100 rounded-lg">
-            <Play className="w-6 h-6 text-amber-600" />
+          <div className="p-2.5 md:p-3 bg-amber-100 rounded-lg">
+            <Play className="w-5 md:w-6 h-5 md:h-6 text-amber-600" />
           </div>
           <div>
-            <p className="text-2xl font-bold text-slate-900">{inProgressCount}</p>
+            <p className="text-xl md:text-2xl font-bold text-slate-900">{inProgressCount}</p>
             <p className="text-sm text-slate-500">In Progress</p>
           </div>
         </div>
         <div className="bg-white rounded-xl border border-slate-200 p-4 flex items-center gap-4">
-          <div className="p-3 bg-green-100 rounded-lg">
-            <CheckCircle2 className="w-6 h-6 text-green-600" />
+          <div className="p-2.5 md:p-3 bg-green-100 rounded-lg">
+            <CheckCircle2 className="w-5 md:w-6 h-5 md:h-6 text-green-600" />
           </div>
           <div>
-            <p className="text-2xl font-bold text-slate-900">{completedCount}</p>
+            <p className="text-xl md:text-2xl font-bold text-slate-900">{completedCount}</p>
             <p className="text-sm text-slate-500">Completed</p>
           </div>
         </div>
       </div>
 
-      {/* Filters */}
-      <div className="flex flex-col sm:flex-row gap-4 mb-6">
-        <div className="relative flex-1">
+      {/* Filters - stack on mobile */}
+      <div className="flex flex-col gap-3 mb-4 md:mb-6">
+        <div className="relative w-full">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
           <input
             type="text"
@@ -290,7 +290,7 @@ export default function MyCoursesPage() {
             className="w-full pl-10 pr-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-2 overflow-x-auto pb-1">
           {[
             { value: 'all', label: 'All' },
             { value: 'in_progress', label: 'In Progress' },
@@ -300,7 +300,7 @@ export default function MyCoursesPage() {
               key={f.value}
               onClick={() => setFilter(f.value as typeof filter)}
               className={cn(
-                'px-4 py-2 rounded-lg text-sm font-medium transition-colors',
+                'px-4 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap',
                 filter === f.value
                   ? 'bg-blue-600 text-white'
                   : 'bg-white border border-slate-300 hover:bg-slate-50'
@@ -312,9 +312,9 @@ export default function MyCoursesPage() {
         </div>
       </div>
 
-      {/* Course List */}
+      {/* Course List - 1 col on mobile */}
       {filteredEnrollments.length === 0 ? (
-        <div className="bg-white rounded-xl border border-slate-200 p-12 text-center">
+        <div className="bg-white rounded-xl border border-slate-200 p-8 md:p-12 text-center">
           <BookOpen className="w-12 h-12 text-slate-300 mx-auto mb-4" />
           <h3 className="text-lg font-medium text-slate-900 mb-1">
             {enrollments.length === 0 ? 'No courses yet' : 'No courses match your filters'}
@@ -335,7 +335,7 @@ export default function MyCoursesPage() {
           )}
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {filteredEnrollments.map((enrollment) => {
             const status = statusConfig[enrollment.status];
             const StatusIcon = status.icon;
@@ -347,7 +347,7 @@ export default function MyCoursesPage() {
                 className="bg-white rounded-xl border border-slate-200 overflow-hidden hover:shadow-lg transition-shadow group"
               >
                 {/* Thumbnail */}
-                <div className="h-32 bg-slate-100 relative overflow-hidden">
+                <div className="h-28 sm:h-32 bg-slate-100 relative overflow-hidden">
                   {enrollment.course_thumbnail_url ? (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img
@@ -357,7 +357,7 @@ export default function MyCoursesPage() {
                     />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center">
-                      <BookOpen className="w-12 h-12 text-slate-300" />
+                      <BookOpen className="w-10 md:w-12 h-10 md:h-12 text-slate-300" />
                     </div>
                   )}
                   {/* Progress overlay */}
@@ -376,7 +376,7 @@ export default function MyCoursesPage() {
 
                 <div className="p-4">
                   <div className="flex items-start justify-between gap-2 mb-2">
-                    <h3 className="font-semibold text-slate-900 line-clamp-2">
+                    <h3 className="font-semibold text-slate-900 line-clamp-2 text-sm md:text-base">
                       {enrollment.course_name}
                     </h3>
                     <span className={cn('shrink-0 p-1.5 rounded-lg', status.color)}>
@@ -396,7 +396,7 @@ export default function MyCoursesPage() {
                     </span>
                   )}
 
-                  <p className="text-sm text-slate-500">
+                  <p className="text-xs md:text-sm text-slate-500">
                     {enrollment.status === 'completed' && enrollment.completed_at
                       ? `Completed ${new Date(enrollment.completed_at).toLocaleDateString()}`
                       : enrollment.status === 'in_progress' && enrollment.started_at

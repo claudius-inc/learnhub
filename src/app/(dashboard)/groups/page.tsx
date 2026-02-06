@@ -81,15 +81,16 @@ export default function GroupsPage() {
   };
 
   return (
-    <div className="p-6">
-      <div className="flex items-center justify-between mb-6">
+    <div>
+      {/* Header - stack on mobile */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4 md:mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">Groups</h1>
-          <p className="text-slate-500 mt-1">Organize users into groups for easier management</p>
+          <h1 className="text-xl md:text-2xl font-bold text-slate-900">Groups</h1>
+          <p className="text-sm text-slate-500 mt-1">Organize users into groups for easier management</p>
         </div>
         <button
           onClick={handleAddGroup}
-          className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+          className="flex items-center justify-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors w-full sm:w-auto"
         >
           <Plus className="w-4 h-4" />
           Add Group
@@ -97,8 +98,8 @@ export default function GroupsPage() {
       </div>
 
       {/* Search */}
-      <div className="bg-white rounded-xl border border-slate-200 p-4 mb-6">
-        <div className="relative max-w-md">
+      <div className="bg-white rounded-xl border border-slate-200 p-4 mb-4 md:mb-6">
+        <div className="relative w-full md:max-w-md">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
           <input
             type="text"
@@ -110,11 +111,11 @@ export default function GroupsPage() {
         </div>
       </div>
 
-      {/* Groups Grid */}
+      {/* Groups Grid - 1 col mobile, 2 col tablet, 3 col desktop */}
       {loading ? (
         <div className="text-center py-12 text-slate-500">Loading...</div>
       ) : groups.length === 0 ? (
-        <div className="bg-white rounded-xl border border-slate-200 p-12 text-center">
+        <div className="bg-white rounded-xl border border-slate-200 p-8 md:p-12 text-center">
           <Users className="w-12 h-12 text-slate-300 mx-auto mb-4" />
           <h3 className="text-lg font-medium text-slate-900 mb-1">No groups yet</h3>
           <p className="text-slate-500 mb-4">Create your first group to organize users</p>
@@ -127,20 +128,20 @@ export default function GroupsPage() {
           </button>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {groups.map((group) => (
             <div
               key={group.id}
-              className="bg-white rounded-xl border border-slate-200 p-5 hover:shadow-md transition-shadow"
+              className="bg-white rounded-xl border border-slate-200 p-4 md:p-5 hover:shadow-md transition-shadow"
             >
               <div className="flex items-start justify-between">
-                <div className="flex-1">
-                  <h3 className="font-semibold text-slate-900">{group.name}</h3>
+                <div className="flex-1 min-w-0">
+                  <h3 className="font-semibold text-slate-900 truncate">{group.name}</h3>
                   {group.description && (
                     <p className="text-sm text-slate-500 mt-1 line-clamp-2">{group.description}</p>
                   )}
                 </div>
-                <div className="relative">
+                <div className="relative ml-2">
                   <button
                     onClick={() => setOpenDropdown(openDropdown === group.id ? null : group.id)}
                     className="p-1 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg"

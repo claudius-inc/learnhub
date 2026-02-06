@@ -73,7 +73,7 @@ export default function LearnPage({ params }: { params: Promise<{ id: string }> 
   const [enrollment, setEnrollment] = useState<Enrollment | null>(null);
   const [unitProgress, setUnitProgress] = useState<UnitProgress[]>([]);
   const [activeUnitId, setActiveUnitId] = useState<string | null>(null);
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [completing, setCompleting] = useState(false);
 
@@ -208,6 +208,12 @@ export default function LearnPage({ params }: { params: Promise<{ id: string }> 
     }
   };
 
+  // Handle unit selection (close sidebar on mobile)
+  const handleUnitSelect = (unitId: string) => {
+    setActiveUnitId(unitId);
+    setSidebarOpen(false);
+  };
+
   // Render video embed
   const renderVideoEmbed = (url: string) => {
     let embedUrl = url;
@@ -256,22 +262,63 @@ export default function LearnPage({ params }: { params: Promise<{ id: string }> 
     : 0;
 
   return (
-    <div className="min-h-screen flex">
+    <div className="min-h-screen flex flex-col md:flex-row">
+      {/* Mobile header */}
+      <div className="md:hidden sticky top-0 z-20 bg-white border-b border-slate-200 p-3 flex items-center gap-3">
+        <button
+          onClick={() => setSidebarOpen(true)}
+          className="p-2 hover:bg-slate-100 rounded-lg"
+        >
+          <Menu className="w-5 h-5" />
+        </button>
+        <div className="flex-1 min-w-0">
+          <h2 className="font-semibold text-slate-900 truncate text-sm">{course.name}</h2>
+          <div className="flex items-center gap-2">
+            <div className="flex-1 bg-slate-200 rounded-full h-1.5">
+              <div
+                className="bg-blue-600 rounded-full h-1.5 transition-all"
+                style={{ width: `${progress}%` }}
+              />
+            </div>
+            <span className="text-xs text-slate-500">{progress}%</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Overlay backdrop for mobile */}
+      {sidebarOpen && (
+        <div 
+          className="fixed inset-0 bg-black/50 z-30 md:hidden"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+
       {/* Sidebar */}
       <aside
         className={cn(
-          'fixed left-64 top-0 h-screen w-80 bg-white border-r border-slate-200 flex flex-col transition-transform z-20',
-          sidebarOpen ? 'translate-x-0' : '-translate-x-full'
+          'fixed md:sticky top-0 left-0 h-screen w-72 md:w-80 bg-white border-r border-slate-200 flex flex-col z-40 transition-transform duration-300',
+          // Mobile: hidden by default, shown when open
+          sidebarOpen ? 'translate-x-0' : '-translate-x-full',
+          // Desktop: always visible
+          'md:translate-x-0'
         )}
       >
         <div className="p-4 border-b border-slate-200">
-          <Link
-            href="/my-courses"
-            className="flex items-center gap-2 text-sm text-slate-600 hover:text-slate-900 mb-3"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            Back to My Courses
-          </Link>
+          <div className="flex items-center justify-between mb-3">
+            <Link
+              href="/my-courses"
+              className="flex items-center gap-2 text-sm text-slate-600 hover:text-slate-900"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              Back to Courses
+            </Link>
+            <button
+              onClick={() => setSidebarOpen(false)}
+              className="p-2 hover:bg-slate-100 rounded-lg md:hidden"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
           <h2 className="font-semibold text-slate-900 line-clamp-2">{course.name}</h2>
           <div className="mt-3 flex items-center gap-2">
             <div className="flex-1 bg-slate-200 rounded-full h-2">
@@ -299,7 +346,7 @@ export default function LearnPage({ params }: { params: Promise<{ id: string }> 
                   return (
                     <button
                       key={unit.id}
-                      onClick={() => setActiveUnitId(unit.id)}
+                      onClick={() => handleUnitSelect(unit.id)}
                       className={cn(
                         'w-full flex items-center gap-3 px-3 py-2 rounded-lg text-left text-sm transition-colors',
                         active
@@ -343,7 +390,7 @@ export default function LearnPage({ params }: { params: Promise<{ id: string }> 
                     return (
                       <button
                         key={unit.id}
-                        onClick={() => setActiveUnitId(unit.id)}
+                        onClick={() => handleUnitSelect(unit.id)}
                         className={cn(
                           'w-full flex items-center gap-3 px-3 py-2 rounded-lg text-left text-sm transition-colors',
                           active
@@ -367,26 +414,12 @@ export default function LearnPage({ params }: { params: Promise<{ id: string }> 
         </nav>
       </aside>
 
-      {/* Toggle button */}
-      <button
-        onClick={() => setSidebarOpen(!sidebarOpen)}
-        className="fixed left-64 top-4 z-30 p-2 bg-white border border-slate-200 rounded-lg shadow-sm hover:bg-slate-50"
-        style={{ marginLeft: sidebarOpen ? '320px' : '0' }}
-      >
-        {sidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-      </button>
-
       {/* Main Content */}
-      <main
-        className={cn(
-          'flex-1 transition-all',
-          sidebarOpen ? 'ml-80' : 'ml-0'
-        )}
-      >
+      <main className="flex-1 min-w-0">
         {activeUnit ? (
-          <div className="max-w-4xl mx-auto p-8">
+          <div className="max-w-4xl mx-auto p-4 md:p-8">
             {/* Unit Header */}
-            <div className="mb-6">
+            <div className="mb-4 md:mb-6">
               <div className="flex items-center gap-2 text-sm text-slate-500 mb-2">
                 {(() => {
                   const Icon = unitTypeIcons[activeUnit.type] || FileText;
@@ -394,32 +427,32 @@ export default function LearnPage({ params }: { params: Promise<{ id: string }> 
                 })()}
                 <span className="capitalize">{activeUnit.type}</span>
               </div>
-              <h1 className="text-2xl font-bold text-slate-900">{activeUnit.name}</h1>
+              <h1 className="text-xl md:text-2xl font-bold text-slate-900">{activeUnit.name}</h1>
             </div>
 
             {/* Unit Content */}
-            <div className="bg-white rounded-xl border border-slate-200 p-6 mb-6">
+            <div className="bg-white rounded-xl border border-slate-200 p-4 md:p-6 mb-4 md:mb-6">
               {activeUnit.type === 'quiz' ? (
-                <div className="text-center py-8">
-                  <HelpCircle className="w-12 h-12 text-blue-500 mx-auto mb-4" />
-                  <h3 className="text-lg font-semibold text-slate-900 mb-2">Quiz Time!</h3>
-                  <p className="text-slate-600 mb-6">
+                <div className="text-center py-6 md:py-8">
+                  <HelpCircle className="w-10 md:w-12 h-10 md:h-12 text-blue-500 mx-auto mb-4" />
+                  <h3 className="text-base md:text-lg font-semibold text-slate-900 mb-2">Quiz Time!</h3>
+                  <p className="text-sm md:text-base text-slate-600 mb-6">
                     Test your knowledge with this quiz. Good luck!
                   </p>
                   <Link
                     href={`/courses/${courseId}/units/${activeUnit.id}/quiz`}
-                    className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-lg"
+                    className="inline-flex items-center gap-2 px-5 md:px-6 py-2.5 md:py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-base md:text-lg"
                   >
-                    <Play className="w-5 h-5" />
+                    <Play className="w-4 md:w-5 h-4 md:h-5" />
                     Start Quiz
                   </Link>
                 </div>
               ) : activeUnit.type === 'video' && activeUnit.content ? (
                 renderVideoEmbed(activeUnit.content)
               ) : activeUnit.type === 'link' && activeUnit.content ? (
-                <div className="text-center py-8">
-                  <ExternalLink className="w-12 h-12 text-slate-400 mx-auto mb-4" />
-                  <p className="text-slate-600 mb-4">This unit links to an external resource.</p>
+                <div className="text-center py-6 md:py-8">
+                  <ExternalLink className="w-10 md:w-12 h-10 md:h-12 text-slate-400 mx-auto mb-4" />
+                  <p className="text-sm md:text-base text-slate-600 mb-4">This unit links to an external resource.</p>
                   <a
                     href={activeUnit.content}
                     target="_blank"
@@ -431,24 +464,24 @@ export default function LearnPage({ params }: { params: Promise<{ id: string }> 
                   </a>
                 </div>
               ) : activeUnit.content ? (
-                <div className="prose prose-slate max-w-none">
+                <div className="prose prose-slate max-w-none prose-sm md:prose-base">
                   <div className="whitespace-pre-wrap">{activeUnit.content}</div>
                 </div>
               ) : (
-                <div className="text-center py-8 text-slate-500">
-                  <FileText className="w-12 h-12 text-slate-300 mx-auto mb-4" />
-                  <p>No content available for this unit.</p>
+                <div className="text-center py-6 md:py-8 text-slate-500">
+                  <FileText className="w-10 md:w-12 h-10 md:h-12 text-slate-300 mx-auto mb-4" />
+                  <p className="text-sm md:text-base">No content available for this unit.</p>
                 </div>
               )}
             </div>
 
-            {/* Navigation */}
-            <div className="flex items-center justify-between">
-              <div>
+            {/* Navigation - stack on mobile */}
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+              <div className="order-2 sm:order-1">
                 {prevUnit && (
                   <button
-                    onClick={() => setActiveUnitId(prevUnit.id)}
-                    className="flex items-center gap-2 px-4 py-2 border border-slate-300 rounded-lg hover:bg-slate-50"
+                    onClick={() => handleUnitSelect(prevUnit.id)}
+                    className="flex items-center justify-center gap-2 w-full sm:w-auto px-4 py-2 border border-slate-300 rounded-lg hover:bg-slate-50"
                   >
                     <ChevronLeft className="w-4 h-4" />
                     Previous
@@ -456,12 +489,12 @@ export default function LearnPage({ params }: { params: Promise<{ id: string }> 
                 )}
               </div>
 
-              <div className="flex items-center gap-3">
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 order-1 sm:order-2">
                 {!isUnitCompleted(activeUnit.id) && activeUnit.type !== 'quiz' && (
                   <button
                     onClick={handleMarkComplete}
                     disabled={completing}
-                    className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50"
+                    className="flex items-center justify-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50"
                   >
                     <CheckCircle2 className="w-4 h-4" />
                     {completing ? 'Saving...' : 'Mark Complete'}
@@ -470,8 +503,8 @@ export default function LearnPage({ params }: { params: Promise<{ id: string }> 
 
                 {nextUnit ? (
                   <button
-                    onClick={() => setActiveUnitId(nextUnit.id)}
-                    className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                    onClick={() => handleUnitSelect(nextUnit.id)}
+                    className="flex items-center justify-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
                   >
                     Next
                     <ChevronRight className="w-4 h-4" />
@@ -480,7 +513,7 @@ export default function LearnPage({ params }: { params: Promise<{ id: string }> 
                   progress === 100 && (
                     <Link
                       href="/my-courses"
-                      className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                      className="flex items-center justify-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
                     >
                       Finish Course
                       <ChevronRight className="w-4 h-4" />
@@ -491,11 +524,11 @@ export default function LearnPage({ params }: { params: Promise<{ id: string }> 
             </div>
           </div>
         ) : (
-          <div className="flex items-center justify-center h-full">
-            <div className="text-center">
-              <BookOpen className="w-16 h-16 text-slate-300 mx-auto mb-4" />
-              <h2 className="text-xl font-semibold text-slate-900 mb-2">No content yet</h2>
-              <p className="text-slate-500">This course doesn&apos;t have any units.</p>
+          <div className="flex items-center justify-center h-full min-h-[50vh]">
+            <div className="text-center p-4">
+              <BookOpen className="w-12 md:w-16 h-12 md:h-16 text-slate-300 mx-auto mb-4" />
+              <h2 className="text-lg md:text-xl font-semibold text-slate-900 mb-2">No content yet</h2>
+              <p className="text-sm md:text-base text-slate-500">This course doesn&apos;t have any units.</p>
             </div>
           </div>
         )}

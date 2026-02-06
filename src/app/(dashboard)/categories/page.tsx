@@ -83,15 +83,16 @@ export default function CategoriesPage() {
   };
 
   return (
-    <div className="p-6">
-      <div className="flex items-center justify-between mb-6">
+    <div>
+      {/* Header - stack on mobile */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4 md:mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">Categories</h1>
-          <p className="text-slate-500 mt-1">Organize courses into categories</p>
+          <h1 className="text-xl md:text-2xl font-bold text-slate-900">Categories</h1>
+          <p className="text-sm text-slate-500 mt-1">Organize courses into categories</p>
         </div>
         <button
           onClick={handleAddCategory}
-          className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+          className="flex items-center justify-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors w-full sm:w-auto"
         >
           <Plus className="w-4 h-4" />
           Add Category
@@ -99,8 +100,8 @@ export default function CategoriesPage() {
       </div>
 
       {/* Search */}
-      <div className="bg-white rounded-xl border border-slate-200 p-4 mb-6">
-        <div className="relative max-w-md">
+      <div className="bg-white rounded-xl border border-slate-200 p-4 mb-4 md:mb-6">
+        <div className="relative w-full md:max-w-md">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
           <input
             type="text"
@@ -112,11 +113,11 @@ export default function CategoriesPage() {
         </div>
       </div>
 
-      {/* Categories Grid */}
+      {/* Categories Grid - 1 col mobile, 2 col tablet, 3 col desktop */}
       {loading ? (
         <div className="text-center py-12 text-slate-500">Loading...</div>
       ) : categories.length === 0 ? (
-        <div className="bg-white rounded-xl border border-slate-200 p-12 text-center">
+        <div className="bg-white rounded-xl border border-slate-200 p-8 md:p-12 text-center">
           <FolderKanban className="w-12 h-12 text-slate-300 mx-auto mb-4" />
           <h3 className="text-lg font-medium text-slate-900 mb-1">No categories yet</h3>
           <p className="text-slate-500 mb-4">Create your first category to organize courses</p>
@@ -129,26 +130,26 @@ export default function CategoriesPage() {
           </button>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {categories.map((category) => (
             <div
               key={category.id}
-              className="bg-white rounded-xl border border-slate-200 p-5 hover:shadow-md transition-shadow"
+              className="bg-white rounded-xl border border-slate-200 p-4 md:p-5 hover:shadow-md transition-shadow"
             >
               <div className="flex items-start justify-between">
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-3 min-w-0">
                   <div
-                    className="w-10 h-10 rounded-lg flex items-center justify-center"
+                    className="w-10 h-10 rounded-lg flex items-center justify-center shrink-0"
                     style={{ backgroundColor: category.color + '20' }}
                   >
                     <FolderKanban className="w-5 h-5" style={{ color: category.color }} />
                   </div>
-                  <div>
-                    <h3 className="font-semibold text-slate-900">{category.name}</h3>
-                    <p className="text-sm text-slate-500">{category.slug}</p>
+                  <div className="min-w-0">
+                    <h3 className="font-semibold text-slate-900 truncate">{category.name}</h3>
+                    <p className="text-sm text-slate-500 truncate">{category.slug}</p>
                   </div>
                 </div>
-                <div className="relative">
+                <div className="relative shrink-0 ml-2">
                   <button
                     onClick={() => setOpenDropdown(openDropdown === category.id ? null : category.id)}
                     className="p-1 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg"

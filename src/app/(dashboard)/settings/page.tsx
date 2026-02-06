@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Settings, Palette, Award, Star, Save, Loader2 } from 'lucide-react';
+import { Palette, Award, Star, Save, Loader2 } from 'lucide-react';
 
 type CertificateTemplate = {
   id: string;
@@ -96,23 +96,24 @@ export default function SettingsPage() {
 
   if (loading) {
     return (
-      <div className="p-6 flex items-center justify-center">
+      <div className="flex items-center justify-center py-12">
         <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
       </div>
     );
   }
 
   return (
-    <div className="p-6 max-w-4xl">
-      <div className="flex items-center justify-between mb-6">
+    <div className="max-w-4xl">
+      {/* Header - stack on mobile */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4 md:mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">Settings</h1>
-          <p className="text-slate-500 mt-1">Configure your LMS settings</p>
+          <h1 className="text-xl md:text-2xl font-bold text-slate-900">Settings</h1>
+          <p className="text-sm text-slate-500 mt-1">Configure your LMS settings</p>
         </div>
         <button
           onClick={handleSave}
           disabled={saving}
-          className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
+          className="flex items-center justify-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 w-full sm:w-auto"
         >
           {saving ? (
             <Loader2 className="w-4 h-4 animate-spin" />
@@ -124,7 +125,7 @@ export default function SettingsPage() {
       </div>
 
       {message && (
-        <div className={`mb-6 px-4 py-3 rounded-lg ${
+        <div className={`mb-4 md:mb-6 px-4 py-3 rounded-lg text-sm ${
           message.type === 'success' 
             ? 'bg-green-50 text-green-700 border border-green-200' 
             : 'bg-red-50 text-red-700 border border-red-200'
@@ -134,12 +135,12 @@ export default function SettingsPage() {
       )}
 
       {/* Site Branding */}
-      <div className="bg-white rounded-xl border border-slate-200 p-6 mb-6">
+      <div className="bg-white rounded-xl border border-slate-200 p-4 md:p-6 mb-4 md:mb-6">
         <div className="flex items-center gap-3 mb-4">
           <div className="p-2 bg-blue-50 rounded-lg">
             <Palette className="w-5 h-5 text-blue-600" />
           </div>
-          <h2 className="text-lg font-semibold text-slate-900">Site Branding</h2>
+          <h2 className="text-base md:text-lg font-semibold text-slate-900">Site Branding</h2>
         </div>
 
         <div className="space-y-4">
@@ -151,7 +152,7 @@ export default function SettingsPage() {
               type="text"
               value={settings.site_name}
               onChange={(e) => handleChange('site_name', e.target.value)}
-              className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm md:text-base"
               placeholder="LearnHub"
             />
           </div>
@@ -164,7 +165,7 @@ export default function SettingsPage() {
               type="text"
               value={settings.site_tagline}
               onChange={(e) => handleChange('site_tagline', e.target.value)}
-              className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm md:text-base"
               placeholder="Your Learning Platform"
             />
           </div>
@@ -178,13 +179,13 @@ export default function SettingsPage() {
                 type="color"
                 value={settings.primary_color}
                 onChange={(e) => handleChange('primary_color', e.target.value)}
-                className="w-12 h-10 border border-slate-300 rounded-lg cursor-pointer"
+                className="w-10 md:w-12 h-10 border border-slate-300 rounded-lg cursor-pointer"
               />
               <input
                 type="text"
                 value={settings.primary_color}
                 onChange={(e) => handleChange('primary_color', e.target.value)}
-                className="w-32 px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono"
+                className="w-28 md:w-32 px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono text-sm"
                 placeholder="#2563eb"
               />
             </div>
@@ -193,12 +194,12 @@ export default function SettingsPage() {
       </div>
 
       {/* Certificate Settings */}
-      <div className="bg-white rounded-xl border border-slate-200 p-6 mb-6">
+      <div className="bg-white rounded-xl border border-slate-200 p-4 md:p-6 mb-4 md:mb-6">
         <div className="flex items-center gap-3 mb-4">
           <div className="p-2 bg-blue-50 rounded-lg">
             <Award className="w-5 h-5 text-blue-600" />
           </div>
-          <h2 className="text-lg font-semibold text-slate-900">Certificate Settings</h2>
+          <h2 className="text-base md:text-lg font-semibold text-slate-900">Certificate Settings</h2>
         </div>
 
         <div>
@@ -208,7 +209,7 @@ export default function SettingsPage() {
           <select
             value={settings.default_certificate_template_id}
             onChange={(e) => handleChange('default_certificate_template_id', e.target.value)}
-            className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm md:text-base"
           >
             <option value="">Select a template...</option>
             {templates.map((template) => (
@@ -217,22 +218,22 @@ export default function SettingsPage() {
               </option>
             ))}
           </select>
-          <p className="text-sm text-slate-500 mt-1">
+          <p className="text-xs md:text-sm text-slate-500 mt-1">
             This template will be used when courses don&apos;t have a specific template assigned.
           </p>
         </div>
       </div>
 
       {/* Gamification Points */}
-      <div className="bg-white rounded-xl border border-slate-200 p-6">
+      <div className="bg-white rounded-xl border border-slate-200 p-4 md:p-6">
         <div className="flex items-center gap-3 mb-4">
           <div className="p-2 bg-blue-50 rounded-lg">
             <Star className="w-5 h-5 text-blue-600" />
           </div>
-          <h2 className="text-lg font-semibold text-slate-900">Gamification Points</h2>
+          <h2 className="text-base md:text-lg font-semibold text-slate-900">Gamification Points</h2>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-slate-700 mb-1">
               Course Completion
@@ -243,9 +244,9 @@ export default function SettingsPage() {
                 min="0"
                 value={settings.points_course_completion}
                 onChange={(e) => handleChange('points_course_completion', parseInt(e.target.value) || 0)}
-                className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm md:text-base"
               />
-              <span className="text-slate-500">pts</span>
+              <span className="text-slate-500 text-sm shrink-0">pts</span>
             </div>
           </div>
 
@@ -259,9 +260,9 @@ export default function SettingsPage() {
                 min="0"
                 value={settings.points_quiz_pass}
                 onChange={(e) => handleChange('points_quiz_pass', parseInt(e.target.value) || 0)}
-                className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm md:text-base"
               />
-              <span className="text-slate-500">pts</span>
+              <span className="text-slate-500 text-sm shrink-0">pts</span>
             </div>
           </div>
 
@@ -275,9 +276,9 @@ export default function SettingsPage() {
                 min="0"
                 value={settings.points_quiz_perfect}
                 onChange={(e) => handleChange('points_quiz_perfect', parseInt(e.target.value) || 0)}
-                className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm md:text-base"
               />
-              <span className="text-slate-500">pts</span>
+              <span className="text-slate-500 text-sm shrink-0">pts</span>
             </div>
           </div>
 
@@ -291,14 +292,14 @@ export default function SettingsPage() {
                 min="0"
                 value={settings.points_certificate_earned}
                 onChange={(e) => handleChange('points_certificate_earned', parseInt(e.target.value) || 0)}
-                className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm md:text-base"
               />
-              <span className="text-slate-500">pts</span>
+              <span className="text-slate-500 text-sm shrink-0">pts</span>
             </div>
           </div>
         </div>
 
-        <p className="text-sm text-slate-500 mt-4">
+        <p className="text-xs md:text-sm text-slate-500 mt-4">
           Points are awarded to learners for completing activities. They contribute to levels and leaderboard rankings.
         </p>
       </div>

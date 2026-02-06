@@ -159,25 +159,26 @@ export default function CoursesPage() {
   };
 
   return (
-    <div className="p-6">
-      <div className="flex items-center justify-between mb-6">
+    <div>
+      {/* Header - stack on mobile */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4 md:mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">Courses</h1>
-          <p className="text-slate-500 mt-1">Create and manage your courses</p>
+          <h1 className="text-xl md:text-2xl font-bold text-slate-900">Courses</h1>
+          <p className="text-sm text-slate-500 mt-1">Create and manage your courses</p>
         </div>
         <button
           onClick={handleAddCourse}
-          className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+          className="flex items-center justify-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors w-full sm:w-auto"
         >
           <Plus className="w-4 h-4" />
           Create Course
         </button>
       </div>
 
-      {/* Filters */}
-      <div className="bg-white rounded-xl border border-slate-200 p-4 mb-6">
-        <div className="flex flex-wrap gap-4">
-          <div className="flex-1 min-w-[200px]">
+      {/* Filters - stack on mobile */}
+      <div className="bg-white rounded-xl border border-slate-200 p-4 mb-4 md:mb-6">
+        <div className="flex flex-col gap-3 md:flex-row md:flex-wrap md:gap-4">
+          <div className="w-full md:flex-1 md:min-w-[200px]">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
               <input
@@ -190,37 +191,39 @@ export default function CoursesPage() {
             </div>
           </div>
 
-          <select
-            value={categoryFilter}
-            onChange={(e) => setCategoryFilter(e.target.value)}
-            className="px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            <option value="">All Categories</option>
-            {categories.map((cat) => (
-              <option key={cat.id} value={cat.id}>
-                {cat.name}
-              </option>
-            ))}
-          </select>
+          <div className="flex gap-2 md:gap-4">
+            <select
+              value={categoryFilter}
+              onChange={(e) => setCategoryFilter(e.target.value)}
+              className="flex-1 md:flex-none px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+            >
+              <option value="">All Categories</option>
+              {categories.map((cat) => (
+                <option key={cat.id} value={cat.id}>
+                  {cat.name}
+                </option>
+              ))}
+            </select>
 
-          <select
-            value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}
-            className="px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            <option value="">All Status</option>
-            <option value="draft">Draft</option>
-            <option value="published">Published</option>
-            <option value="archived">Archived</option>
-          </select>
+            <select
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              className="flex-1 md:flex-none px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+            >
+              <option value="">All Status</option>
+              <option value="draft">Draft</option>
+              <option value="published">Published</option>
+              <option value="archived">Archived</option>
+            </select>
+          </div>
         </div>
       </div>
 
-      {/* Courses Grid */}
+      {/* Courses Grid - 1 col mobile, 2 col tablet, 3 col desktop */}
       {loading ? (
         <div className="text-center py-12 text-slate-500">Loading...</div>
       ) : courses.length === 0 ? (
-        <div className="bg-white rounded-xl border border-slate-200 p-12 text-center">
+        <div className="bg-white rounded-xl border border-slate-200 p-8 md:p-12 text-center">
           <BookOpen className="w-12 h-12 text-slate-300 mx-auto mb-4" />
           <h3 className="text-lg font-medium text-slate-900 mb-1">No courses yet</h3>
           <p className="text-slate-500 mb-4">Create your first course to get started</p>
@@ -233,7 +236,7 @@ export default function CoursesPage() {
           </button>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
           {courses.map((course) => (
             <div
               key={course.id}
@@ -351,10 +354,10 @@ export default function CoursesPage() {
         </div>
       )}
 
-      {/* Pagination */}
+      {/* Pagination - responsive */}
       {pagination.totalPages > 1 && (
-        <div className="flex items-center justify-between mt-6 bg-white rounded-xl border border-slate-200 px-6 py-4">
-          <p className="text-sm text-slate-600">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 mt-6 bg-white rounded-xl border border-slate-200 px-4 md:px-6 py-4">
+          <p className="text-sm text-slate-600 text-center sm:text-left">
             Showing {(pagination.page - 1) * pagination.limit + 1} to{' '}
             {Math.min(pagination.page * pagination.limit, pagination.total)} of {pagination.total} courses
           </p>

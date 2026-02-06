@@ -33,11 +33,11 @@ function StatCard({
   };
 
   return (
-    <div className="bg-white rounded-xl p-6 border border-slate-200">
+    <div className="bg-white rounded-xl p-4 md:p-6 border border-slate-200">
       <div className="flex items-center justify-between">
-        <div>
-          <p className="text-sm text-slate-500">{title}</p>
-          <p className="text-2xl font-bold text-slate-900 mt-1">{value}</p>
+        <div className="min-w-0 flex-1">
+          <p className="text-sm text-slate-500 truncate">{title}</p>
+          <p className="text-xl md:text-2xl font-bold text-slate-900 mt-1">{value}</p>
           {trend && (
             <p className="text-xs text-green-600 mt-1 flex items-center gap-1">
               <TrendingUp className="w-3 h-3" />
@@ -45,8 +45,8 @@ function StatCard({
             </p>
           )}
         </div>
-        <div className={`p-3 rounded-lg ${colors[color]}`}>
-          <Icon className="w-6 h-6" />
+        <div className={`p-2 md:p-3 rounded-lg ${colors[color]} shrink-0`}>
+          <Icon className="w-5 h-5 md:w-6 md:h-6" />
         </div>
       </div>
     </div>
@@ -75,12 +75,13 @@ export default function DashboardPage() {
 
   return (
     <div>
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-slate-900">Dashboard</h1>
-        <p className="text-slate-500">Welcome back! Here's your training overview.</p>
+      <div className="mb-4 md:mb-6">
+        <h1 className="text-xl md:text-2xl font-bold text-slate-900">Dashboard</h1>
+        <p className="text-sm md:text-base text-slate-500">Welcome back! Here's your training overview.</p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+      {/* Stats grid - 1 col mobile, 2 col tablet, 3 col desktop */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mb-6 md:mb-8">
         <StatCard
           title="Total Users"
           value={stats?.totalUsers ?? '-'}
@@ -120,16 +121,17 @@ export default function DashboardPage() {
         />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-white rounded-xl p-6 border border-slate-200">
-          <h2 className="text-lg font-semibold text-slate-900 mb-4">Recent Activity</h2>
+      {/* Activity cards - stack on mobile */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
+        <div className="bg-white rounded-xl p-4 md:p-6 border border-slate-200">
+          <h2 className="text-base md:text-lg font-semibold text-slate-900 mb-4">Recent Activity</h2>
           <div className="space-y-4">
             <p className="text-sm text-slate-500">No recent activity yet.</p>
           </div>
         </div>
 
-        <div className="bg-white rounded-xl p-6 border border-slate-200">
-          <h2 className="text-lg font-semibold text-slate-900 mb-4">Popular Courses</h2>
+        <div className="bg-white rounded-xl p-4 md:p-6 border border-slate-200">
+          <h2 className="text-base md:text-lg font-semibold text-slate-900 mb-4">Popular Courses</h2>
           <div className="space-y-4">
             <p className="text-sm text-slate-500">No courses created yet.</p>
           </div>

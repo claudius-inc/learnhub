@@ -2,10 +2,15 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Bell, Search, LogOut, User as UserIcon, ChevronDown } from 'lucide-react';
+import { Bell, Search, LogOut, User as UserIcon, ChevronDown, Menu } from 'lucide-react';
 import { User } from '@/lib/auth';
 
-export function Header({ user }: { user: User }) {
+type HeaderProps = {
+  user: User;
+  onMenuToggle: () => void;
+};
+
+export function Header({ user, onMenuToggle }: HeaderProps) {
   const router = useRouter();
   const [showDropdown, setShowDropdown] = useState(false);
 
@@ -15,9 +20,17 @@ export function Header({ user }: { user: User }) {
   };
 
   return (
-    <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6">
-      <div className="flex items-center gap-4 flex-1">
-        <div className="relative max-w-md flex-1">
+    <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-4 md:px-6">
+      <div className="flex items-center gap-3 flex-1">
+        {/* Hamburger menu for mobile */}
+        <button 
+          onClick={onMenuToggle}
+          className="p-2 hover:bg-slate-100 rounded-lg md:hidden"
+        >
+          <Menu className="w-5 h-5 text-slate-600" />
+        </button>
+
+        <div className="relative max-w-md flex-1 hidden sm:block">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
           <input
             type="text"
@@ -27,7 +40,12 @@ export function Header({ user }: { user: User }) {
         </div>
       </div>
 
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-2 md:gap-4">
+        {/* Search button on mobile */}
+        <button className="p-2 hover:bg-slate-100 rounded-lg sm:hidden">
+          <Search className="w-5 h-5 text-slate-600" />
+        </button>
+
         <button className="p-2 hover:bg-slate-100 rounded-lg relative">
           <Bell className="w-5 h-5 text-slate-600" />
           <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
@@ -41,7 +59,7 @@ export function Header({ user }: { user: User }) {
             <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white font-medium">
               {user.name.charAt(0).toUpperCase()}
             </div>
-            <ChevronDown className="w-4 h-4 text-slate-400" />
+            <ChevronDown className="w-4 h-4 text-slate-400 hidden sm:block" />
           </button>
 
           {showDropdown && (

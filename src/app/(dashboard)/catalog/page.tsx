@@ -5,10 +5,8 @@ import Link from 'next/link';
 import {
   BookOpen,
   Search,
-  Filter,
   Users,
   Layers,
-  Clock,
   CheckCircle2,
   ChevronRight,
 } from 'lucide-react';
@@ -126,32 +124,24 @@ export default function CatalogPage() {
     return true;
   });
 
-  // Group courses by category for featured display
-  const coursesByCategory = categories
-    .map((cat) => ({
-      category: cat,
-      courses: courses.filter((c) => c.category_id === cat.id),
-    }))
-    .filter((g) => g.courses.length > 0);
-
   if (loading) {
     return (
-      <div className="p-6">
+      <div>
         <div className="text-center py-12 text-slate-500">Loading...</div>
       </div>
     );
   }
 
   return (
-    <div className="p-6">
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-slate-900">Course Catalog</h1>
-        <p className="text-slate-500">Browse and enroll in available courses</p>
+    <div>
+      <div className="mb-4 md:mb-6">
+        <h1 className="text-xl md:text-2xl font-bold text-slate-900">Course Catalog</h1>
+        <p className="text-sm md:text-base text-slate-500">Browse and enroll in available courses</p>
       </div>
 
-      {/* Search and Filters */}
-      <div className="flex flex-col sm:flex-row gap-4 mb-6">
-        <div className="relative flex-1">
+      {/* Search and Filters - stack on mobile */}
+      <div className="flex flex-col gap-4 mb-4 md:mb-6">
+        <div className="relative w-full">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
           <input
             type="text"
@@ -165,7 +155,7 @@ export default function CatalogPage() {
           <button
             onClick={() => setSelectedCategory('')}
             className={cn(
-              'px-4 py-2 rounded-lg text-sm font-medium transition-colors',
+              'px-3 md:px-4 py-2 rounded-lg text-sm font-medium transition-colors',
               selectedCategory === ''
                 ? 'bg-blue-600 text-white'
                 : 'bg-white border border-slate-300 hover:bg-slate-50'
@@ -178,7 +168,7 @@ export default function CatalogPage() {
               key={cat.id}
               onClick={() => setSelectedCategory(cat.id)}
               className={cn(
-                'px-4 py-2 rounded-lg text-sm font-medium transition-colors',
+                'px-3 md:px-4 py-2 rounded-lg text-sm font-medium transition-colors',
                 selectedCategory === cat.id
                   ? 'text-white'
                   : 'bg-white border border-slate-300 hover:bg-slate-50'
@@ -195,9 +185,9 @@ export default function CatalogPage() {
         </div>
       </div>
 
-      {/* Course Grid */}
+      {/* Course Grid - 1 col mobile, 2 col tablet, 3 col desktop */}
       {filteredCourses.length === 0 ? (
-        <div className="bg-white rounded-xl border border-slate-200 p-12 text-center">
+        <div className="bg-white rounded-xl border border-slate-200 p-8 md:p-12 text-center">
           <BookOpen className="w-12 h-12 text-slate-300 mx-auto mb-4" />
           <h3 className="text-lg font-medium text-slate-900 mb-1">No courses available</h3>
           <p className="text-slate-500">
@@ -207,7 +197,7 @@ export default function CatalogPage() {
           </p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
           {filteredCourses.map((course) => {
             const enrollment = getEnrollment(course.id);
             const isEnrolled = !!enrollment;
@@ -218,7 +208,7 @@ export default function CatalogPage() {
                 className="bg-white rounded-xl border border-slate-200 overflow-hidden hover:shadow-lg transition-shadow flex flex-col"
               >
                 {/* Thumbnail */}
-                <div className="h-40 bg-slate-100 relative overflow-hidden">
+                <div className="h-32 sm:h-40 bg-slate-100 relative overflow-hidden">
                   {course.thumbnail_url ? (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img
@@ -228,12 +218,12 @@ export default function CatalogPage() {
                     />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center">
-                      <BookOpen className="w-16 h-16 text-slate-300" />
+                      <BookOpen className="w-12 md:w-16 h-12 md:h-16 text-slate-300" />
                     </div>
                   )}
                   {course.category_name && (
                     <span
-                      className="absolute top-3 left-3 px-2.5 py-1 text-xs font-medium rounded-full text-white"
+                      className="absolute top-2 md:top-3 left-2 md:left-3 px-2 py-1 text-xs font-medium rounded-full text-white"
                       style={{ backgroundColor: course.category_color || '#6366f1' }}
                     >
                       {course.category_name}
@@ -241,26 +231,26 @@ export default function CatalogPage() {
                   )}
                 </div>
 
-                <div className="p-5 flex-1 flex flex-col">
-                  <h3 className="font-semibold text-lg text-slate-900 mb-2 line-clamp-2">
+                <div className="p-4 md:p-5 flex-1 flex flex-col">
+                  <h3 className="font-semibold text-base md:text-lg text-slate-900 mb-2 line-clamp-2">
                     {course.name}
                   </h3>
 
                   {course.description && (
-                    <p className="text-sm text-slate-500 mb-4 line-clamp-2">
+                    <p className="text-sm text-slate-500 mb-3 md:mb-4 line-clamp-2">
                       {course.description}
                     </p>
                   )}
 
                   {/* Course Stats */}
-                  <div className="flex items-center gap-4 text-sm text-slate-500 mb-4">
+                  <div className="flex items-center gap-3 md:gap-4 text-xs md:text-sm text-slate-500 mb-3 md:mb-4">
                     <span className="flex items-center gap-1">
                       <Layers className="w-4 h-4" />
                       {course.unit_count} units
                     </span>
                     <span className="flex items-center gap-1">
                       <Users className="w-4 h-4" />
-                      {course.enrollment_count} enrolled
+                      {course.enrollment_count}
                     </span>
                   </div>
 
@@ -283,7 +273,7 @@ export default function CatalogPage() {
                         )}
                         <Link
                           href={`/learn/${course.id}`}
-                          className="flex items-center justify-center gap-2 w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                          className="flex items-center justify-center gap-2 w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm md:text-base"
                         >
                           {enrollment.status === 'completed' ? (
                             <>
@@ -307,7 +297,7 @@ export default function CatalogPage() {
                       <button
                         onClick={() => handleEnroll(course.id)}
                         disabled={enrolling === course.id}
-                        className="w-full px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50"
+                        className="w-full px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50 text-sm md:text-base"
                       >
                         {enrolling === course.id ? 'Enrolling...' : 'Enroll Now'}
                       </button>
