@@ -89,16 +89,16 @@
 ## Phase 5: AI & Gamification (Week 5)
 
 ### AI Features
-- [ ] AI Course Creator (Gemini) - generate outline from topic
-- [ ] AI Quiz Generator - generate questions from content
+- [x] AI Course Creator (Gemini) - generate outline from topic
+- [x] AI Quiz Generator - generate questions from content
 - [ ] AI Content Companion - rewrite, summarize, translate
 - [ ] AI Thumbnail Generator
 
 ### Gamification
-- [ ] Points system (configurable per action)
-- [ ] Badges for achievements
-- [ ] Levels (unlock with points)
-- [ ] Leaderboards (global, per group)
+- [x] Points system (configurable per action)
+- [x] Badges for achievements
+- [x] Levels (unlock with points)
+- [x] Leaderboards (global, per group)
 
 ## Phase 6: Enterprise & Polish (Week 6)
 
@@ -132,7 +132,7 @@
 
 ## Current Sprint
 
-**Focus:** Phase 4 - Assessments & Certificates ✓
+**Focus:** Phase 5 - AI & Gamification ✓
 
 **Completed:**
 - Categories CRUD API and management page
@@ -153,5 +153,16 @@
 - My Certificates page for learners
 - Admin certificates management page
 - Question bank management page (/questions)
+- AI Course Creator (/api/ai/generate-outline) with Gemini
+- AI Generate button in CourseModal for new courses
+- AI Quiz Generator (/api/ai/generate-questions)
+- AI Generate Questions button in Question Bank page
+- Points system (/api/points) with level calculation
+- Badges system (/api/badges) with auto-awarding
+- Badge checking API (/api/badges/check)
+- Points awarded on unit/course/quiz completion
+- Leaderboard page (/leaderboard)
+- Points and badges displayed on learner dashboard
+- Default badges seeded via migration
 
-**Next task:** Phase 5 - AI & Gamification
+**Next task:** Phase 6 - Enterprise & Polish
