@@ -238,6 +238,13 @@ export default function CourseDetailPage({ params }: { params: Promise<{ id: str
           )}
         </div>
         <div className="flex items-center gap-2">
+          <Link
+            href={`/courses/${id}/edit`}
+            className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+          >
+            <Pencil className="w-4 h-4" />
+            Edit Course
+          </Link>
           <button
             onClick={() => setModalOpen(true)}
             className="flex items-center gap-2 px-4 py-2 border border-slate-300 rounded-lg hover:bg-slate-50 transition-colors"
