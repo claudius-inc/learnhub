@@ -26,11 +26,11 @@
 ## Phase 2: Course Engine (Week 2)
 
 ### Course CRUD
-- [ ] Database schema (courses, sections, units, categories)
-- [ ] Course list page with filters
-- [ ] Create course modal
-- [ ] Course detail/edit page
-- [ ] Course settings (time limits, prerequisites, status)
+- [x] Database schema (courses, sections, units, categories)
+- [x] Course list page with filters (search, category, status)
+- [x] Create course modal with settings
+- [x] Course detail/edit page showing sections/units structure
+- [x] Course settings (time limits, hidden, status)
 
 ### Course Builder
 - [ ] Drag-drop section/unit reordering
@@ -41,9 +41,9 @@
 - [ ] External link embed/iframe
 
 ### Categories
-- [ ] Category CRUD
-- [ ] Category colors and icons
-- [ ] Course catalog organized by category
+- [x] Category CRUD API (/api/categories)
+- [x] Category colors with color picker
+- [x] Categories page at /categories
 
 ## Phase 3: Learning Experience (Week 3)
 
@@ -132,6 +132,13 @@
 
 ## Current Sprint
 
-**Focus:** Phase 1 - Foundation
+**Focus:** Phase 2 - Course Engine
 
-**Next task:** Set up Turso database and create schema
+**Completed:**
+- Categories CRUD API and management page
+- Courses CRUD API with filters and pagination
+- Course list page with card grid view
+- Course detail page with sections/units display
+- CourseModal and CategoryModal components
+
+**Next task:** Course Builder - section/unit CRUD and drag-drop reordering
