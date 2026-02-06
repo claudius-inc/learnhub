@@ -1,7 +1,37 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { query, execute } from '@/lib/db';
+import { query, execute, queryOne } from '@/lib/db';
 import { getSession } from '@/lib/auth';
 import { v4 as uuidv4 } from 'uuid';
+import { POINT_VALUES } from '@/app/api/points/route';
+
+// Helper to award points
+async function awardPoints(userId: string, points: number): Promise<void> {
+  const existing = await queryOne<{ total_points: number }>(
+    'SELECT total_points FROM user_points WHERE user_id = ?',
+    [userId]
+  );
+
+  const LEVEL_THRESHOLDS = [0, 100, 300, 600, 1000, 1500, 2200, 3000, 4000, 5000];
+  const calculateLevel = (pts: number): number => {
+    for (let i = LEVEL_THRESHOLDS.length - 1; i >= 0; i--) {
+      if (pts >= LEVEL_THRESHOLDS[i]) return i + 1;
+    }
+    return 1;
+  };
+
+  if (existing) {
+    const newTotal = existing.total_points + points;
+    await execute(
+      `UPDATE user_points SET total_points = ?, level = ?, updated_at = datetime('now') WHERE user_id = ?`,
+      [newTotal, calculateLevel(newTotal), userId]
+    );
+  } else {
+    await execute(
+      `INSERT INTO user_points (user_id, total_points, level) VALUES (?, ?, ?)`,
+      [userId, points, calculateLevel(points)]
+    );
+  }
+}
 
 type Enrollment = {
   id: string;
@@ -156,9 +186,46 @@ export async function POST(
       [enrollmentStatus, progressPct, progressPct, enrollmentId]
     );
 
+    // Award points for unit completion
+    let pointsAwarded = 0;
+    if (status === 'completed' && (!existingProgress.length || existingProgress[0].status !== 'completed')) {
+      pointsAwarded += POINT_VALUES.unit_completion;
+      await awardPoints(enrollment[0].user_id, POINT_VALUES.unit_completion);
+    }
+
     // Auto-generate certificate on course completion
     let certificate = null;
     if (progressPct === 100 && enrollment[0].status !== 'completed') {
+      // Award course completion points
+      pointsAwarded += POINT_VALUES.course_completion;
+      await awardPoints(enrollment[0].user_id, POINT_VALUES.course_completion);
+
+      // Check if this is user's first course completion (bonus)
+      const previousCompletions = await query<{ count: number }>(
+        `SELECT COUNT(*) as count FROM enrollments 
+         WHERE user_id = ? AND status = 'completed' AND id != ?`,
+        [enrollment[0].user_id, enrollmentId]
+      );
+      
+      if (previousCompletions[0].count === 0) {
+        pointsAwarded += POINT_VALUES.first_course;
+        await awardPoints(enrollment[0].user_id, POINT_VALUES.first_course);
+      }
+
+      // Check and award any earned badges
+      try {
+        await fetch(new URL('/api/badges/check', request.url).toString(), {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Cookie': `session=${sessionId}`,
+          },
+          body: JSON.stringify({ user_id: enrollment[0].user_id }),
+        });
+      } catch (badgeError) {
+        console.error('Failed to check badges:', badgeError);
+      }
+
       // Check if certificate already exists
       const existingCert = await query<{ id: string }>(
         'SELECT id FROM certificates WHERE enrollment_id = ?',
@@ -203,6 +270,7 @@ export async function POST(
       unit_progress: updatedProgress[0],
       enrollment: updatedEnrollment[0],
       certificate,
+      pointsAwarded,
     });
   } catch (error) {
     console.error('Error updating progress:', error);

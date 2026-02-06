@@ -1,7 +1,37 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { query, execute } from '@/lib/db';
+import { query, execute, queryOne } from '@/lib/db';
 import { getSession } from '@/lib/auth';
 import { QuizAttempt } from '../route';
+import { POINT_VALUES } from '@/app/api/points/route';
+
+// Helper to award points
+async function awardPoints(userId: string, points: number): Promise<void> {
+  const existing = await queryOne<{ total_points: number }>(
+    'SELECT total_points FROM user_points WHERE user_id = ?',
+    [userId]
+  );
+
+  const LEVEL_THRESHOLDS = [0, 100, 300, 600, 1000, 1500, 2200, 3000, 4000, 5000];
+  const calculateLevel = (pts: number): number => {
+    for (let i = LEVEL_THRESHOLDS.length - 1; i >= 0; i--) {
+      if (pts >= LEVEL_THRESHOLDS[i]) return i + 1;
+    }
+    return 1;
+  };
+
+  if (existing) {
+    const newTotal = existing.total_points + points;
+    await execute(
+      `UPDATE user_points SET total_points = ?, level = ?, updated_at = datetime('now') WHERE user_id = ?`,
+      [newTotal, calculateLevel(newTotal), userId]
+    );
+  } else {
+    await execute(
+      `INSERT INTO user_points (user_id, total_points, level) VALUES (?, ?, ?)`,
+      [userId, points, calculateLevel(points)]
+    );
+  }
+}
 
 type QuizAnswer = {
   id: string;
@@ -193,8 +223,19 @@ export async function POST(
       [score, passed, id]
     );
 
-    // Update unit progress if passed
+    // Award points and update unit progress if passed
+    let pointsAwarded = 0;
     if (passed) {
+      // Award quiz pass points
+      pointsAwarded += POINT_VALUES.quiz_pass;
+      await awardPoints(attempt[0].user_id, POINT_VALUES.quiz_pass);
+
+      // Bonus for perfect score
+      if (score === 100) {
+        pointsAwarded += POINT_VALUES.quiz_perfect;
+        await awardPoints(attempt[0].user_id, POINT_VALUES.quiz_perfect);
+      }
+
       await execute(
         `INSERT OR REPLACE INTO unit_progress (enrollment_id, unit_id, status, score, completed_at)
          VALUES (?, ?, 'completed', ?, datetime('now'))`,
@@ -255,6 +296,7 @@ export async function POST(
       passed: !!passed,
       earnedPoints,
       totalPoints,
+      pointsAwarded,
     });
   } catch (error) {
     console.error('Error submitting quiz:', error);
