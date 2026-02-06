@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { query, execute } from '@/lib/db';
 import { getSession } from '@/lib/auth';
+import { v4 as uuidv4 } from 'uuid';
 
 type Enrollment = {
   id: string;
@@ -155,6 +156,38 @@ export async function POST(
       [enrollmentStatus, progressPct, progressPct, enrollmentId]
     );
 
+    // Auto-generate certificate on course completion
+    let certificate = null;
+    if (progressPct === 100 && enrollment[0].status !== 'completed') {
+      // Check if certificate already exists
+      const existingCert = await query<{ id: string }>(
+        'SELECT id FROM certificates WHERE enrollment_id = ?',
+        [enrollmentId]
+      );
+
+      if (existingCert.length === 0) {
+        // Generate verification code
+        const verificationCode = uuidv4().replace(/-/g, '').substring(0, 16).toUpperCase();
+
+        // Get default template
+        const defaultTemplate = await query<{ id: string }>(
+          'SELECT id FROM certificate_templates ORDER BY created_at DESC LIMIT 1'
+        );
+
+        await execute(
+          `INSERT INTO certificates (enrollment_id, template_id, verification_code)
+           VALUES (?, ?, ?)`,
+          [enrollmentId, defaultTemplate[0]?.id || null, verificationCode]
+        );
+
+        const newCert = await query<{ id: string; verification_code: string }>(
+          'SELECT id, verification_code FROM certificates WHERE enrollment_id = ?',
+          [enrollmentId]
+        );
+        certificate = newCert[0];
+      }
+    }
+
     // Return updated data
     const updatedProgress = await query<UnitProgress>(
       'SELECT * FROM unit_progress WHERE enrollment_id = ? AND unit_id = ?',
@@ -169,6 +202,7 @@ export async function POST(
     return NextResponse.json({
       unit_progress: updatedProgress[0],
       enrollment: updatedEnrollment[0],
+      certificate,
     });
   } catch (error) {
     console.error('Error updating progress:', error);
