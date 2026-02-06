@@ -19,6 +19,7 @@ import { User } from '@/lib/auth';
 const adminNav = [
   { name: 'Dashboard', href: '/', icon: LayoutDashboard },
   { name: 'Users', href: '/users', icon: Users },
+  { name: 'Groups', href: '/groups', icon: FolderKanban },
   { name: 'Courses', href: '/courses', icon: BookOpen },
   { name: 'Learning Paths', href: '/paths', icon: Map },
   { name: 'Categories', href: '/categories', icon: FolderKanban },
